@@ -1,3 +1,5 @@
+// Package auth provides helper functions for authenticating with external
+// services such as the Google Static Maps and Google Cloud Platform.
 package auth
 
 import (

@@ -8,7 +8,7 @@ import (
 	"googlemaps.github.io/maps"
 )
 
-// GetStaticMapsClient returns a Google Static Maps Client
+// GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
 func GetStaticMapsClient() *maps.Client {
 	err := godotenv.Load()
 	if err != nil {
@@ -20,7 +20,7 @@ func GetStaticMapsClient() *maps.Client {
 
 	client, err := maps.NewClient(maps.WithAPIKey(apiKey))
 	if err != nil {
-		log.Fatalf("Static Maps Client error: %s", err)
+		log.Fatalf("Maps Client error: %s", err)
 	}
 
 	return client

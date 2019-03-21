@@ -8,6 +8,11 @@
 # Test binary, built with `go test -c`
 *.test
 
+# Secrets
+.env
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Output executable
 tiffany

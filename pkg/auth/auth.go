@@ -12,6 +12,7 @@ import (
 
 // GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
 func GetStaticMapsClient() *maps.Client {
+	log.Printf("Loading Google Static Maps Client")
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)

@@ -35,6 +35,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 
 // SaveImagePNG exports an image into the given image type (PNG or TIFF)
 func SaveImagePNG(img image.Image, path string) {
+	log.Printf("Saving image to %s", path)
 	f, err := os.Create(path)
 	if err != nil {
 		log.Fatal(err)

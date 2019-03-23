@@ -38,10 +38,15 @@ Render to TIFF any Google Static Maps (GSM) image
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		// Get arguments passed
 		coordinate, _ := cmd.Flags().GetStringSlice("coordinate")
 		zoom, _ := cmd.Flags().GetInt("zoom")
 		size, _ := cmd.Flags().GetIntSlice("size")
-		fmt.Println(coordinate, zoom, size)
+		pngPath, _ := cmd.Flags().GetString("pngPath")
+		tiffPath, _ := cmd.Flags().GetString("tiffPath")
+		jsonPath, _ := cmd.Flags().GetString("jsonPath")
+
+		pipeline(coordinate, zoom, size, pngPath, tiffPath, jsonPath)
 	},
 }
 
@@ -58,7 +63,8 @@ func init() {
 func pipeline(coordinate []string, zoom int, size []int, pngPath string, tiffPath string, jsonPath string) {
 	client := auth.GetStaticMapsClient()
 	gsmImage := services.GetGSMImage(client, coordinate, zoom, size)
-	services.SaveImagePNG(gsmImage, pngPath)
+	pngFileName := fmt.Sprintf("%s%s-%s-%s-%sx%s.png", pngPath, coordinate[0], coordinate[1], zoom, size[0], size[1])
+	services.SaveImagePNG(gsmImage, pngFileName)
 }
 
 // Execute runs the root command

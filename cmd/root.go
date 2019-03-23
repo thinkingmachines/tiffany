@@ -10,7 +10,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "tiffany",
+	Use:   "tiffany LATITUDE LONGITUDE",
 	Short: "tiffany is a tool for rendering to TIFF any image from Google Static Maps",
 	Long: `
  _   _  __  __
@@ -25,11 +25,6 @@ var rootCmd = &cobra.Command{
 Render to TIFF any Google Static Maps (GSM) image
 (c) Thinking Machines Data Science, 2019`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		coordinates, _ := cmd.Flags().GetStringSlice("coordinate")
-		if len(coordinates) != 2 {
-			fmt.Println(len(coordinates))
-			return errors.New("Requires a coordinate in the form {lat},{lon}")
-		}
 		size, _ := cmd.Flags().GetIntSlice("size")
 		if len(size) != 2 {
 			return errors.New("Requires a size in the form {L},{W}")
@@ -38,7 +33,9 @@ Render to TIFF any Google Static Maps (GSM) image
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
-		coordinate, _ := cmd.Flags().GetStringSlice("coordinate")
+		coordinate := []string{args[0], args[1]}
+
+		// Get flags
 		zoom, _ := cmd.Flags().GetInt("zoom")
 		size, _ := cmd.Flags().GetIntSlice("size")
 		pngPath, _ := cmd.Flags().GetString("pngPath")
@@ -50,7 +47,6 @@ Render to TIFF any Google Static Maps (GSM) image
 }
 
 func init() {
-	rootCmd.Flags().StringSliceP("coordinate", "c", nil, "center coordinate {lat},{lon} (required)")
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().String("pngPath", "tiffany.out/png/", "path to save GSM images in PNG")

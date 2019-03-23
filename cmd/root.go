@@ -26,7 +26,7 @@ Render to TIFF any Google Static Maps (GSM) image
 (c) Thinking Machines Data Science, 2019`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
-			return errors.New("Please input the coordinates")
+			return errors.New("Please input the coordinates: LATITUDE LONGITUDE")
 		}
 		size, _ := cmd.Flags().GetIntSlice("size")
 		if len(size) != 2 {

@@ -6,21 +6,21 @@ import (
 	"context"
 	"fmt"
 	"image"
+	"image/png"
 	"log"
-
-	"github.com/thinkingmachines/tiffany/pkg/types"
+	"os"
 
 	"googlemaps.github.io/maps"
 )
 
 // GetGSMImage downloads a single static maps image given a client and set of
 // parameters
-func GetGSMImage(client *maps.Client, coordinate types.Coordinate, zoom int, size types.ImageSize, maptype string) image.Image {
+func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int) image.Image {
 	// Prepare request
 	r := &maps.StaticMapRequest{
-		Center:  fmt.Sprintf("%s,%s", coordinate.Latitude, coordinate.Longitude),
+		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
 		Zoom:    zoom,
-		Size:    fmt.Sprintf("%sx%s", size.Length, size.Width),
+		Size:    fmt.Sprintf("%sx%s", size[0], size[1]),
 		Scale:   2,
 		MapType: "satellite",
 	}
@@ -31,4 +31,21 @@ func GetGSMImage(client *maps.Client, coordinate types.Coordinate, zoom int, siz
 	}
 
 	return img
+}
+
+// SaveImagePNG exports an image into the given image type (PNG or TIFF)
+func SaveImagePNG(img image.Image, path string) {
+	f, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := png.Encode(f, img); err != nil {
+		f.Close()
+		log.Fatal(err)
+	}
+
+	if err := f.Close(); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -50,7 +50,7 @@ Render to TIFF any Google Static Maps (GSM) image
 }
 
 func init() {
-	rootCmd.Flags().StringSliceP("coordinate", "c", []string{"", ""}, "center coordinate {lat},{lon} (required)")
+	rootCmd.Flags().StringSliceP("coordinate", "c", nil, "center coordinate {lat},{lon} (required)")
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().String("pngPath", "tiffany.out/png/", "path to save GSM images in PNG")

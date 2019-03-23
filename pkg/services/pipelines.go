@@ -1,3 +1,5 @@
+// Package services provides functions that enable us to interact with various
+// external services such as the Static Maps API and/or Google BigQuery
 package services
 
 import (

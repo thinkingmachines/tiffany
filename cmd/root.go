@@ -26,19 +26,19 @@ Render to TIFF any Google Static Maps (GSM) image
 	Args: func(cmd *cobra.Command, args []string) error {
 		coordinates, _ := cmd.Flags().GetStringSlice("coordinate")
 		if len(coordinates) != 2 {
+			fmt.Println(len(coordinates))
 			return errors.New("Requires a coordinate in the form {lat},{lon}")
 		}
 		size, _ := cmd.Flags().GetIntSlice("size")
 		if len(size) != 2 {
 			return errors.New("Requires a size in the form {L},{W}")
 		}
-		return fmt.Errorf("Invalid argument")
-
+		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		coordinate, _ := cmd.Flags().GetStringSlice("coordinate")
-		zoom, _ := cmd.Flags().GetIntSlice("zoom")
-		size, _ := cmd.Flags().GetInt("size")
+		zoom, _ := cmd.Flags().GetInt("zoom")
+		size, _ := cmd.Flags().GetIntSlice("size")
 		fmt.Println(coordinate, zoom, size)
 	},
 }

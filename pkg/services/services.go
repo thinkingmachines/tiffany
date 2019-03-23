@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/thinkingmachines/tiffany/pkg/auth"
 	"googlemaps.github.io/maps"
 )
 
@@ -20,7 +21,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 	r := &maps.StaticMapRequest{
 		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
 		Zoom:    zoom,
-		Size:    fmt.Sprintf("%sx%s", size[0], size[1]),
+		Size:    fmt.Sprintf("%dx%d", size[0], size[1]),
 		Scale:   2,
 		MapType: "satellite",
 	}
@@ -34,19 +35,26 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 }
 
 // SaveImagePNG exports an image into the given image type (PNG or TIFF)
-func SaveImagePNG(img image.Image, path string) {
+func SaveImagePNG(img image.Image, path string, fname string) {
 	log.Printf("Saving image to %s", path)
-	f, err := os.Create(path)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.MkdirAll(path, os.ModePerm)
+	}
+
+	f, err := os.Create(fmt.Sprintf("%s%s", path, fname))
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
-	if err := png.Encode(f, img); err != nil {
-		f.Close()
-		log.Fatal(err)
-	}
+	defer f.Close()
+	png.Encode(f, img)
+}
 
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
+// RunPipeline executes the whole download and georeference tasks for a single coordinate
+func RunPipeline(coordinate []string, zoom int, size []int, pngPath string, tiffPath string, jsonPath string) {
+	client := auth.GetStaticMapsClient()
+	gsmImage := GetGSMImage(client, coordinate, zoom, size)
+	pngFileName := fmt.Sprintf("%s-%s-%d-%dx%d.png", coordinate[0], coordinate[1], zoom, size[0], size[1])
+	SaveImagePNG(gsmImage, pngPath, pngFileName)
+
 }

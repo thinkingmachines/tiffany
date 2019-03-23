@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/thinkingmachines/tiffany/pkg/auth"
 	"github.com/thinkingmachines/tiffany/pkg/services"
 )
 
@@ -46,7 +45,7 @@ Render to TIFF any Google Static Maps (GSM) image
 		tiffPath, _ := cmd.Flags().GetString("tiffPath")
 		jsonPath, _ := cmd.Flags().GetString("jsonPath")
 
-		pipeline(coordinate, zoom, size, pngPath, tiffPath, jsonPath)
+		services.RunPipeline(coordinate, zoom, size, pngPath, tiffPath, jsonPath)
 	},
 }
 
@@ -54,17 +53,10 @@ func init() {
 	rootCmd.Flags().StringSliceP("coordinate", "c", []string{"", ""}, "center coordinate {lat},{lon} (required)")
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
-	rootCmd.PersistentFlags().String("pngPath", "./tiffany.out/png/", "path to save GSM images in PNG")
-	rootCmd.PersistentFlags().String("tiffPath", "./tiffany.out/tiff/", "path to save GSM images in TIFF")
-	rootCmd.PersistentFlags().String("jsonPath", "./tiffany.out/json/", "path to save GeoJSON labels")
+	rootCmd.PersistentFlags().String("pngPath", "tiffany.out/png/", "path to save GSM images in PNG")
+	rootCmd.PersistentFlags().String("tiffPath", "tiffany.out/tiff/", "path to save GSM images in TIFF")
+	rootCmd.PersistentFlags().String("jsonPath", "tiffany.out/json/", "path to save GeoJSON labels")
 	rootCmd.MarkFlagRequired("coordinate")
-}
-
-func pipeline(coordinate []string, zoom int, size []int, pngPath string, tiffPath string, jsonPath string) {
-	client := auth.GetStaticMapsClient()
-	gsmImage := services.GetGSMImage(client, coordinate, zoom, size)
-	pngFileName := fmt.Sprintf("%s%s-%s-%s-%sx%s.png", pngPath, coordinate[0], coordinate[1], zoom, size[0], size[1])
-	services.SaveImagePNG(gsmImage, pngFileName)
 }
 
 // Execute runs the root command

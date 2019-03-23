@@ -1,12 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/thinkingmachines/tiffany/pkg/auth"
-	"github.com/thinkingmachines/tiffany/pkg/services"
 )
 
 var rootCmd = &cobra.Command{
@@ -24,11 +23,31 @@ var rootCmd = &cobra.Command{
 
 Render to TIFF any Google Static Maps (GSM) image
 (c) Thinking Machines Data Science, 2019`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		coordinates, _ := cmd.Flags().GetStringSlice("coordinate")
+		if len(coordinates) != 2 {
+			return errors.New("Requires a coordinate in the form {lat},{lon}")
+		}
+		size, _ := cmd.Flags().GetIntSlice("size")
+		if len(size) != 2 {
+			return errors.New("Requires a size in the form {L},{W}")
+		}
+		return fmt.Errorf("Invalid argument")
+
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		coordinate, _ := cmd.Flags().GetStringSlice("coordinate")
+		zoom, _ := cmd.Flags().GetIntSlice("zoom")
+		size, _ := cmd.Flags().GetInt("size")
+		fmt.Println(coordinate, zoom, size)
+	},
 }
 
-func pipeline() {
-	gsmClient = auth.GetStaticMapsClient()
-	services.GetGSMImage(gsmClient)
+func init() {
+	rootCmd.Flags().StringSliceP("coordinate", "c", []string{"", ""}, "center coordinate {lat},{lon} (required)")
+	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
+	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
+	rootCmd.MarkFlagRequired("coordinate")
 }
 
 // Execute runs the root command

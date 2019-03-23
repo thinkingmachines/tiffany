@@ -7,12 +7,15 @@ import (
 	"fmt"
 	"image"
 	"log"
-	"thinkingmachines/tiffany/pkg/types"
+
+	"github.com/thinkingmachines/tiffany/pkg/types"
+
+	"googlemaps.github.io/maps"
 )
 
 // GetGSMImage downloads a single static maps image given a client and set of
 // parameters
-func GetGSMImage(client *maps.Client, coordinate types.Coordinate, zoom int, size types.Size, maptype string) image.Image {
+func GetGSMImage(client *maps.Client, coordinate types.Coordinate, zoom int, size types.ImageSize, maptype string) image.Image {
 	// Prepare request
 	r := &maps.StaticMapRequest{
 		Center:  fmt.Sprintf("%s,%s", coordinate.Latitude, coordinate.Longitude),

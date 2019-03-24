@@ -31,6 +31,11 @@ Render to TIFF any Google Static Maps (GSM) image
 		if len(size) != 2 {
 			return errors.New("Requires a size in the form {L},{W}")
 		}
+		wtLbl, _ := cmd.Flags().GetString("with-labels")
+		noRef, _ := cmd.Flags().GetBool("without-reference")
+		if len(wtLbl) > 0 && noRef {
+			return errors.New("Conflicting arguments, cannot make labels without georeferencing the image")
+		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -42,8 +47,9 @@ Render to TIFF any Google Static Maps (GSM) image
 		size, _ := cmd.Flags().GetIntSlice("size")
 		path, _ := cmd.Flags().GetString("path")
 		noRef, _ := cmd.Flags().GetBool("without-reference")
+		wtLbl, _ := cmd.Flags().GetString("with-labels")
 
-		RunPipeline(coordinate, zoom, size, path, noRef)
+		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl)
 	},
 }
 
@@ -51,6 +57,7 @@ func init() {
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().String("path", "tiffany.out/", "path to save output artifacts")
+	rootCmd.PersistentFlags().String("with-labels", "", "path to the label's WKT representation (.csv)")
 	rootCmd.PersistentFlags().Bool("without-reference", false, "do not georeference")
 }
 

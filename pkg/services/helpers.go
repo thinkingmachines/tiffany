@@ -42,7 +42,6 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 
 	log.Println("Georeferencing image")
 	// Define projection constants
-	const epsg int = 3857
 	const projector float64 = 156543.03392
 	const maxExtent float64 = 20037508.34
 
@@ -71,9 +70,6 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	upperLeftY := lat3857 + gsdResolution*float64(latCenter)
 	upperLeftX := lon3857 - gsdResolution*float64(lonCenter)
 
-	// Specify raster location through the geotransform array
-	gt := [6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution}
-
 	// Read source image and its driver
 	srcDataset, err := gdal.Open(inpath, gdal.ReadOnly)
 	if err != nil {
@@ -86,13 +82,15 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 
 	// Create copy for destination image and update it
 	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
-	dstDataset.SetGeoTransform(gt)
+	defer dstDataset.Close()
+	defer srcDataset.Close()
 
 	// Get raster projection
 	spatialRef := gdal.CreateSpatialReference("")
-	spatialRef.FromEPSG(epsg)
+	spatialRef.FromEPSG(3857)
 	srString, err := spatialRef.ToWKT()
 	dstDataset.SetProjection(srString)
+	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
 }
 
 // SaveImagePNG exports an image into a file

@@ -23,5 +23,5 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string) {
 	client := auth.GetStaticMapsClient()
 	gsmImage := GetGSMImage(client, coordinate, zoom, size)
 	SaveImagePNG(gsmImage, pngPath)
-	GeoreferenceImage(coordinate, size, pngPath, tifPath)
+	GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
 }

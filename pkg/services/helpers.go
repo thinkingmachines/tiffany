@@ -38,7 +38,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 }
 
 // GeoreferenceImage converts a Static Maps image into a geo-referenced TIFF
-func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath string) {
+func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string, outpath string) {
 
 	log.Println("Georeferencing image")
 	// Define projection constants
@@ -56,7 +56,7 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	lonCenter := size[1] / 2
 
 	// Compute the GSD Resolution and convert to EPSG3857
-	gsdResolution := projector * math.Cos(lat4326*math.Pi/180) / math.Pow(2, 17)
+	gsdResolution := projector * math.Cos(lat4326*math.Pi/180) / math.Pow(2, float64(zoom))
 	lat3857 := (math.Log(math.Tan((90+lat4326)*math.Pi/360)) / (math.Pi / 180)) * maxExtent / 180
 	lon3857 := lon4326 * maxExtent / 180
 

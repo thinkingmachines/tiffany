@@ -48,6 +48,8 @@ API_KEY="<your API key here>"
 
 ### Getting images
 
+![Demo](assets/tiffany-demo.gif)
+
 To get images, simply call `tiffany`, and pass it your latitude and longitude:
 
 ```s

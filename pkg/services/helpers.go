@@ -63,7 +63,7 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 
 	// Compute the GSD Resolution and convert to EPSG3857
 	gsdResolution := projector * math.Cos(lat4326*math.Pi/180) / math.Pow(2, 17)
-	lat3857 := math.Log((math.Tan(90+lat4326) * math.Pi / 360)) / (math.Pi / 180) * maxExtent / 180
+	lat3857 := (math.Log(math.Tan((90+lat4326)*math.Pi/360)) / (math.Pi / 180)) * maxExtent / 180
 	lon3857 := lon4326 * maxExtent / 180
 
 	// Compute boundaries
@@ -82,8 +82,6 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 
 	// Create copy for destination image and update it
 	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
-	defer dstDataset.Close()
-	defer srcDataset.Close()
 
 	// Get raster projection
 	spatialRef := gdal.CreateSpatialReference("")
@@ -91,6 +89,9 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	srString, err := spatialRef.ToWKT()
 	dstDataset.SetProjection(srString)
 	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
+
+	defer dstDataset.Close()
+	defer srcDataset.Close()
 }
 
 // SaveImagePNG exports an image into a file

@@ -10,6 +10,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/lukeroth/gdal"
@@ -44,6 +45,10 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	const epsg int = 3857
 	const projector float64 = 156543.03392
 	const maxExtent float64 = 20037508.34
+
+	if _, err := os.Stat(filepath.Dir(outpath)); os.IsNotExist(err) {
+		os.MkdirAll(filepath.Dir(outpath), os.ModePerm)
+	}
 
 	lat4326, err := strconv.ParseFloat(coordinate[0], 64)
 	if err != nil {
@@ -90,14 +95,14 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	dstDataset.SetProjection(srString)
 }
 
-// SaveImagePNG exports an image into the given image type (PNG or TIFF)
-func SaveImagePNG(img image.Image, path string, fname string) {
+// SaveImagePNG exports an image into a file
+func SaveImagePNG(img image.Image, path string) {
 	log.Printf("Saving image to %s", path)
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.MkdirAll(path, os.ModePerm)
+	if _, err := os.Stat(filepath.Dir(path)); os.IsNotExist(err) {
+		os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	}
 
-	f, err := os.Create(fmt.Sprintf("%s%s", path, fname))
+	f, err := os.Create(fmt.Sprintf("%s", path))
 	if err != nil {
 		log.Panic(err)
 	}

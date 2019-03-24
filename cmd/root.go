@@ -42,8 +42,9 @@ Render to TIFF any Google Static Maps (GSM) image
 		zoom, _ := cmd.Flags().GetInt("zoom")
 		size, _ := cmd.Flags().GetIntSlice("size")
 		path, _ := cmd.Flags().GetString("path")
+		noRef, _ := cmd.Flags().GetBool("without-reference")
 
-		services.RunPipeline(coordinate, zoom, size, path)
+		services.RunPipeline(coordinate, zoom, size, path, noRef)
 	},
 }
 
@@ -51,6 +52,7 @@ func init() {
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().String("path", "tiffany.out/", "path to save output artifacts")
+	rootCmd.PersistentFlags().Bool("without-reference", false, "do not georeference")
 }
 
 // Execute runs the root command

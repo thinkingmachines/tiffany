@@ -10,7 +10,7 @@ import (
 )
 
 // RunPipeline executes the whole download and georeference tasks for a single coordinate
-func RunPipeline(coordinate []string, zoom int, size []int, path string) {
+func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool) {
 
 	const gsmSubDir string = "png"
 	const geoSubDir string = "tif"
@@ -23,5 +23,7 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string) {
 	client := auth.GetStaticMapsClient()
 	gsmImage := GetGSMImage(client, coordinate, zoom, size)
 	SaveImagePNG(gsmImage, pngPath)
-	GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
+	if !noRef {
+		GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
+	}
 }

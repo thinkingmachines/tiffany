@@ -25,7 +25,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
 		Zoom:    zoom,
 		Size:    fmt.Sprintf("%dx%d", size[0], size[1]),
-		Scale:   2,
+		Scale:   1,
 		MapType: "satellite",
 	}
 	// Perform request
@@ -80,14 +80,17 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 		log.Panic(err)
 	}
 
-	// Create copy for destination image and update it
-	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
-
 	// Get raster projection
-	spatialRef := gdal.CreateSpatialReference("")
-	spatialRef.FromEPSG(3857)
-	srString, err := spatialRef.ToWKT()
-	dstDataset.SetProjection(srString)
+	srs := gdal.CreateSpatialReference("")
+	srs.FromEPSG(3857)
+	destWKT, err := srs.ToWKT()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	// Create destination dataset
+	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
+	dstDataset.SetProjection(destWKT)
 	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
 
 	defer dstDataset.Close()

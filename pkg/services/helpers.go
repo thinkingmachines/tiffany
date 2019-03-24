@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/disintegration/imaging"
 	"github.com/lukeroth/gdal"
 	"googlemaps.github.io/maps"
 )
@@ -95,7 +96,8 @@ func SaveImagePNG(img image.Image, path string) {
 	if err != nil {
 		log.Panic(err)
 	}
+	imgRGBA := imaging.Clone(img)
 
 	defer f.Close()
-	png.Encode(f, img)
+	png.Encode(f, imgRGBA)
 }

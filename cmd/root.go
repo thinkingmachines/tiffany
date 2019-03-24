@@ -41,21 +41,16 @@ Render to TIFF any Google Static Maps (GSM) image
 		// Get flags
 		zoom, _ := cmd.Flags().GetInt("zoom")
 		size, _ := cmd.Flags().GetIntSlice("size")
-		pngPath, _ := cmd.Flags().GetString("pngPath")
-		tiffPath, _ := cmd.Flags().GetString("tiffPath")
-		jsonPath, _ := cmd.Flags().GetString("jsonPath")
+		path, _ := cmd.Flags().GetString("path")
 
-		services.RunPipeline(coordinate, zoom, size, pngPath, tiffPath, jsonPath)
+		services.RunPipeline(coordinate, zoom, size, path)
 	},
 }
 
 func init() {
 	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
-	rootCmd.PersistentFlags().String("pngPath", "tiffany.out/png/", "path to save GSM images in PNG")
-	rootCmd.PersistentFlags().String("tiffPath", "tiffany.out/tiff/", "path to save GSM images in TIFF")
-	rootCmd.PersistentFlags().String("jsonPath", "tiffany.out/json/", "path to save GeoJSON labels")
-	rootCmd.MarkFlagRequired("coordinate")
+	rootCmd.PersistentFlags().String("path", "tiffany.out/", "path to save output artifacts")
 }
 
 // Execute runs the root command

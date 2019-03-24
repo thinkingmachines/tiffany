@@ -39,6 +39,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 // GeoreferenceImage converts a Static Maps image into a geo-referenced TIFF
 func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath string) {
 
+	log.Println("Georeferencing image")
 	// Define projection constants
 	const epsg int = 3857
 	const projector float64 = 156543.03392

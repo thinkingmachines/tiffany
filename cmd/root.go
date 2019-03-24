@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/thinkingmachines/tiffany/pkg/services"
 )
 
 var rootCmd = &cobra.Command{
@@ -44,7 +43,7 @@ Render to TIFF any Google Static Maps (GSM) image
 		path, _ := cmd.Flags().GetString("path")
 		noRef, _ := cmd.Flags().GetBool("without-reference")
 
-		services.RunPipeline(coordinate, zoom, size, path, noRef)
+		RunPipeline(coordinate, zoom, size, path, noRef)
 	},
 }
 

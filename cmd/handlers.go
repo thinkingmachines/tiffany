@@ -1,6 +1,4 @@
-// Package services provides functions that enable us to interact with various
-// external services such as the Static Maps API and/or Google BigQuery
-package services
+package cmd
 
 import (
 	"context"
@@ -14,29 +12,10 @@ import (
 	"strconv"
 
 	"github.com/disintegration/imaging"
+	"github.com/joho/godotenv"
 	"github.com/lukeroth/gdal"
 	"googlemaps.github.io/maps"
 )
-
-// GetGSMImage downloads a single static maps image given a client and set of
-// parameters
-func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int) image.Image {
-	// Prepare request
-	r := &maps.StaticMapRequest{
-		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
-		Zoom:    zoom,
-		Size:    fmt.Sprintf("%dx%d", size[0], size[1]),
-		Scale:   1,
-		MapType: "satellite",
-	}
-	// Perform request
-	img, err := client.StaticMap(context.Background(), r)
-	if err != nil {
-		log.Fatalf("Request error: %s", err)
-	}
-
-	return img
-}
 
 // GeoreferenceImage converts a Static Maps image into a geo-referenced TIFF
 func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string, outpath string) {
@@ -83,6 +62,63 @@ func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string,
 
 	defer dstDataset.Close()
 	defer srcDataset.Close()
+}
+
+// GetGSMImage downloads a single static maps image given a client and set of
+// parameters
+func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int) image.Image {
+	// Prepare request
+	r := &maps.StaticMapRequest{
+		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
+		Zoom:    zoom,
+		Size:    fmt.Sprintf("%dx%d", size[0], size[1]),
+		Scale:   1,
+		MapType: "satellite",
+	}
+	// Perform request
+	img, err := client.StaticMap(context.Background(), r)
+	if err != nil {
+		log.Fatalf("Request error: %s", err)
+	}
+
+	return img
+}
+
+// GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
+func GetStaticMapsClient() *maps.Client {
+	log.Printf("Loading Google Static Maps Client")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+
+	apiKey := os.Getenv("API_KEY")
+
+	client, err := maps.NewClient(maps.WithAPIKey(apiKey))
+	if err != nil {
+		log.Fatalf("Maps Client error: %s", err)
+	}
+
+	return client
+}
+
+// RunPipeline executes the whole download and georeference tasks for a single coordinate
+func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool) {
+
+	const gsmSubDir string = "png"
+	const geoSubDir string = "tif"
+
+	// Create filenames for output artifacts
+	fnameFormat := fmt.Sprintf("%s-%s-%d-%dx%d", coordinate[0], coordinate[1], zoom, size[0], size[1])
+	pngPath := filepath.Join(path, gsmSubDir, fnameFormat+".png")
+	tifPath := filepath.Join(path, geoSubDir, fnameFormat+".tiff")
+
+	client := GetStaticMapsClient()
+	gsmImage := GetGSMImage(client, coordinate, zoom, size)
+	SaveImagePNG(gsmImage, pngPath)
+	if !noRef {
+		GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
+	}
 }
 
 // SaveImagePNG exports an image into a file

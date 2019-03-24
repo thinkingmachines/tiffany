@@ -76,8 +76,7 @@ Request](https://help.github.com/en/articles/creating-a-pull-request)! I'm
 open to any kind of contribution, but I'd definitely appreciate:
 
 - Implementation of new features 
-- Proposal for new metrics
-- Documentation
+- Writing documentation
 - Testing
 
 Also, we have a

@@ -49,14 +49,8 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 		os.MkdirAll(filepath.Dir(outpath), os.ModePerm)
 	}
 
-	lat4326, err := strconv.ParseFloat(coordinate[0], 64)
-	if err != nil {
-		log.Panic(err)
-	}
-	lon4326, err := strconv.ParseFloat(coordinate[1], 64)
-	if err != nil {
-		log.Panic(err)
-	}
+	lat4326, _ := strconv.ParseFloat(coordinate[0], 64)
+	lon4326, _ := strconv.ParseFloat(coordinate[1], 64)
 
 	latCenter := size[0] / 2
 	lonCenter := size[1] / 2
@@ -71,27 +65,20 @@ func GeoreferenceImage(coordinate []string, size []int, inpath string, outpath s
 	upperLeftX := lon3857 - gsdResolution*float64(lonCenter)
 
 	// Read source image and its driver
-	srcDataset, err := gdal.Open(inpath, gdal.ReadOnly)
-	if err != nil {
-		log.Panic(err)
-	}
-	driver, err := gdal.GetDriverByName("GTiff")
-	if err != nil {
-		log.Panic(err)
-	}
+	srcDataset, _ := gdal.Open(inpath, gdal.ReadOnly)
+	driver, _ := gdal.GetDriverByName("GTiff")
+
+	// Open destination dataset
+	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
+	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
 
 	// Get raster projection
 	srs := gdal.CreateSpatialReference("")
 	srs.FromEPSG(3857)
-	destWKT, err := srs.ToWKT()
-	if err != nil {
-		log.Panic(err)
-	}
+	destWKT, _ := srs.ToWKT()
 
 	// Create destination dataset
-	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
 	dstDataset.SetProjection(destWKT)
-	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
 
 	defer dstDataset.Close()
 	defer srcDataset.Close()

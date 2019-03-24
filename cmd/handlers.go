@@ -57,7 +57,6 @@ func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string,
 	srs.FromEPSG(3857)
 	destWKT, _ := srs.ToWKT()
 
-	// Create destination dataset
 	dstDataset.SetProjection(destWKT)
 
 	defer dstDataset.Close()
@@ -102,6 +101,20 @@ func GetStaticMapsClient() *maps.Client {
 	return client
 }
 
+// ReprojectImage converts the projection of an image back to 4326
+func ReprojectImage(path string) {
+
+	options := []string{"-t_srs", "epsg:4326"}
+	ds, err := gdal.Open(path, gdal.ReadOnly)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ds.Close()
+
+	out := gdal.GDALWarp(path, gdal.Dataset{}, []gdal.Dataset{ds}, options)
+	defer out.Close()
+}
+
 // RunPipeline executes the whole download and georeference tasks for a single coordinate
 func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool) {
 
@@ -118,6 +131,7 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	SaveImagePNG(gsmImage, pngPath)
 	if !noRef {
 		GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
+		ReprojectImage(tifPath)
 	}
 }
 

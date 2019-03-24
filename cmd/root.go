@@ -52,7 +52,7 @@ func init() {
 	rootCmd.PersistentFlags().IntVarP(&zoom, "zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceVarP(&size, "size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().StringVar(&path, "path", "tiffany.out/", "path to save output artifacts")
-	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's WKT representation (.csv)")
+	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's ESRI Shapefile")
 	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
 }
 

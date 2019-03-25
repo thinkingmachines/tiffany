@@ -122,7 +122,7 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	const geoSubDir string = "tif"
 
 	// Create filenames for output artifacts
-	fnameFormat := fmt.Sprintf("%s-%s-%d-%dx%d", coordinate[0], coordinate[1], zoom, size[0], size[1])
+	fnameFormat := fmt.Sprintf("%s_%s_%d_%dx%d", coordinate[0], coordinate[1], zoom, size[0], size[1])
 	pngPath := filepath.Join(path, gsmSubDir, fnameFormat+".png")
 	tifPath := filepath.Join(path, geoSubDir, fnameFormat+".tiff")
 

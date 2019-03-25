@@ -27,12 +27,9 @@ Render to TIFF any Google Static Maps (GSM) image
 		if len(args) != 2 {
 			return errors.New("Please input the coordinates: LATITUDE LONGITUDE")
 		}
-		size, _ := cmd.Flags().GetIntSlice("size")
 		if len(size) != 2 {
 			return errors.New("Requires a size in the form {L},{W}")
 		}
-		wtLbl, _ := cmd.Flags().GetString("with-labels")
-		noRef, _ := cmd.Flags().GetBool("without-reference")
 		if len(wtLbl) > 0 && noRef {
 			return errors.New("Conflicting arguments, cannot make labels without georeferencing the image")
 		}
@@ -41,24 +38,22 @@ Render to TIFF any Google Static Maps (GSM) image
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
-
-		// Get flags
-		zoom, _ := cmd.Flags().GetInt("zoom")
-		size, _ := cmd.Flags().GetIntSlice("size")
-		path, _ := cmd.Flags().GetString("path")
-		noRef, _ := cmd.Flags().GetBool("without-reference")
-		wtLbl, _ := cmd.Flags().GetString("with-labels")
-
 		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl)
 	},
 }
 
+var zoom int
+var size []int
+var path string
+var wtLbl string
+var noRef bool
+
 func init() {
-	rootCmd.PersistentFlags().IntP("zoom", "z", int(16), "zoom level")
-	rootCmd.PersistentFlags().IntSliceP("size", "s", []int{400, 400}, "image size in pixels {L},{W}")
-	rootCmd.PersistentFlags().String("path", "tiffany.out/", "path to save output artifacts")
-	rootCmd.PersistentFlags().String("with-labels", "", "path to the label's WKT representation (.csv)")
-	rootCmd.PersistentFlags().Bool("without-reference", false, "do not georeference")
+	rootCmd.PersistentFlags().IntVarP(&zoom, "zoom", "z", int(16), "zoom level")
+	rootCmd.PersistentFlags().IntSliceVarP(&size, "size", "s", []int{400, 400}, "image size in pixels {L},{W}")
+	rootCmd.PersistentFlags().StringVar(&path, "path", "tiffany.out/", "path to save output artifacts")
+	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's WKT representation (.csv)")
+	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
 }
 
 // Execute runs the root command

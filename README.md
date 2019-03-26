@@ -67,6 +67,13 @@ then simply pass the `--without-reference` flag:
 $ tiffany 14.546943935986324 121.01974525389744 --without-reference
 ```
 
+Lastly, you can clip labels for your geo-referenced image from an ESRI
+Shapefile. This is useful for downstream tasks such as in machine learning:
+
+```s
+$ tiffany 14.546943935986324 121.01974525389744 --with-labels=path/to/gis_osm_buildings_free_1.shp
+```
+
 You can find more options by running `tiffany --help`
 
 ## Contributing

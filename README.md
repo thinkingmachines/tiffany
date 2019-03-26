@@ -1,6 +1,13 @@
 # tiffany 
 
+[![GoDoc](https://godoc.org/github.com/thinkingmachines/tiffany?status.svg)](https://godoc.org/github.com/thinkingmachines/tiffany)
+
 A command-line tool for rendering to TIFF any image from Google Static Maps
+
+`tiffany` downloads, georeferences, and labels any satellite image from the
+Google Static Maps (API). You can use this to prepare labeled data for
+downstream tasks such as in computer vision (object detection, semantic
+segmentation, etc.)
 
 ## Installation
 
@@ -79,8 +86,8 @@ You can find more options by running `tiffany --help`
 ## Contributing
 
 Simply fork this repository and [make a Pull
-Request](https://help.github.com/en/articles/creating-a-pull-request)! I'm
-open to any kind of contribution, but I'd definitely appreciate:
+Request](https://help.github.com/en/articles/creating-a-pull-request)! We're 
+open to any kind of contribution, but we'd definitely appreciate:
 
 - Implementation of new features 
 - Writing documentation

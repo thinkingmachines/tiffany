@@ -1,3 +1,5 @@
+// Package cmd contains all the helper functions, handlers, and command-line methods
+// for building the tiffany command-line interface.
 package cmd
 
 import (

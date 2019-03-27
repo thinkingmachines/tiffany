@@ -49,18 +49,38 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var batchCmd = &cobra.Command{
+	Use:   "batch PATH/TO/FILE.CSV",
+	Short: "Apply tiffany on a CSV file of coordinates",
+	Long: `The batch command is a more efficient alternative when running tiffany
+on a list of lat-lon coordinates. Instead of using a for-loop, you can just provide
+the path to the CSV file, and apply the same parameters as if you're running tiffany
+on a single point.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("batch called")
+	},
+}
+
 var zoom int
 var size []int
 var path string
 var wtLbl string
 var noRef bool
+var skipFirst bool
 
 func init() {
+	// Add sub-commands
+	rootCmd.AddCommand(batchCmd)
+
+	// Define flags for ROOT command
 	rootCmd.PersistentFlags().IntVarP(&zoom, "zoom", "z", int(16), "zoom level")
 	rootCmd.PersistentFlags().IntSliceVarP(&size, "size", "s", []int{400, 400}, "image size in pixels {L},{W}")
 	rootCmd.PersistentFlags().StringVar(&path, "path", "tiffany.out/", "path to save output artifacts")
 	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's ESRI Shapefile")
 	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
+
+	// Define flags for `batch` command
+	batchCmd.Flags().BoolVar(&skipFirst, "skip-header-row", false, "skip header row")
 }
 
 // Execute runs the root command

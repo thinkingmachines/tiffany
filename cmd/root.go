@@ -14,17 +14,22 @@ var rootCmd = &cobra.Command{
 	Use:   "tiffany LATITUDE LONGITUDE",
 	Short: "tiffany is a tool for rendering to TIFF any image from Google Static Maps",
 	Long: `
- _   _  __  __
-| | (_)/ _|/ _|
-| |_ _| |_| |_ __ _ _ __  _   _
-| __| |  _|  _/ _' | '_ \| | | |
-| |_| | | | || (_| | | | | |_| |
- \__|_|_| |_| \__,_|_| |_|\__, |
-                           __/ |
-                          |___/
+	     _   _  __  __
+	    | | (_)/ _|/ _|
+	    | |_ _| |_| |_ __ _ _ __  _   _
+	    | __| |  _|  _/ _' | '_ \| | | |
+	    | |_| | | | || (_| | | | | |_| |
+	     \__|_|_| |_| \__,_|_| |_|\__, |
+				       __/ |
+				      |___/
 
-Render to TIFF any Google Static Maps (GSM) image
-(c) Thinking Machines Data Science, 2019`,
+    Render to TIFF any Google Static Maps (GSM) image
+       (c) Thinking Machines Data Science, 2019`,
+	Example: `
+  tiffany 14.54694524 121.0197543253
+  tiffany 14.54694524 121.0197543253 --without-reference
+  tiffany 14.54694524 121.0197543253 --with-labels=/path/to/file.shp
+`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
 			return errors.New("Please input the coordinates: LATITUDE LONGITUDE")

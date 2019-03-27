@@ -52,10 +52,20 @@ var rootCmd = &cobra.Command{
 var batchCmd = &cobra.Command{
 	Use:   "batch PATH/TO/FILE.CSV",
 	Short: "Apply tiffany on a CSV file of coordinates",
-	Long: `The batch command is a more efficient alternative when running tiffany
-on a list of lat-lon coordinates. Instead of using a for-loop, you can just provide
-the path to the CSV file, and apply the same parameters as if you're running tiffany
-on a single point.`,
+	Long: `
+The batch command is a more efficient alternative when running tiffany
+on a list of lat-lon coordinates. Instead of using a for-loop, you can
+just provide the path to the CSV file, and apply the same parameters as
+if you're running tiffany on a single point.
+
+Assumes that the first column is the latitude and the second column is the
+longitude.
+`,
+	Example: `
+  tiffany batch coordinates.csv
+  tiffany batch coordinates.csv --without-reference
+  tiffany batch coordinates.csv --with-labels=/path/to/file.shp
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("batch called")
 	},

@@ -6,7 +6,8 @@ steps:
       image: karalabe/xgo-latest
       commands:
           - export TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-          - > xgo
+          - > 
+            xgo
             --out tiffany-$TAG
             --targets=linux/amd64,linux/386,darwin/*,windows/* 
             -v

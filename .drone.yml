@@ -2,8 +2,12 @@ kind: pipeline
 name: default
 
 steps:
+    - name: gdal
+      image: continuumio/miniconda
+      commands:
+          - conda install gdal
     - name: build
-      image: karalabe/xgo-latest
+      image: karalabe/xgo-latest 
       commands:
           - > 
             xgo

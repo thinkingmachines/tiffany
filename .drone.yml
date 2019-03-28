@@ -5,7 +5,7 @@ steps:
     - name: xgo_build
       image: karalabe/xgo-latest
       commands:
-          - export TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          - export TAG=$(git describe --tags)
           - > 
             xgo
             --out tiffany-$TAG

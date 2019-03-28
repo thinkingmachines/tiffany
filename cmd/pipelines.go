@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/csv"
 	"fmt"
 	"image/png"
 	"log"
@@ -11,10 +12,17 @@ import (
 	"strconv"
 
 	"github.com/disintegration/imaging"
+	"github.com/gocarina/gocsv"
 	"github.com/joho/godotenv"
 	"github.com/lukeroth/gdal"
 	"googlemaps.github.io/maps"
 )
+
+// Coordinate defines a lat-long coordinate from a csv file
+type Coordinate struct {
+	latitude  string `csv:"latitude"`
+	longitude string `csv:"longitude"`
+}
 
 // ClipLabelbyExtent gets the extent of an input raster and clips a shapefile from it
 func ClipLabelbyExtent(extent gdal.Geometry, shpFile gdal.Layer, outpath string) {
@@ -155,6 +163,40 @@ func GetStaticMapsClient() *maps.Client {
 	return client
 }
 
+// ReadCSVFile opens a csv file and returns a list of coordinates
+func ReadCSVFile(path string, skipFirst bool) []*coordinate {
+	file, err := os.OpenFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	coordinates := []*coordinate{}
+	if skipFirst {
+		if err := gocsv.UnmarshalCSVWithoutHeaders(file, &coordinates); err != nil {
+			log.Fatal(err)
+		}
+
+	}
+	if err := gocsv.UnmarshalCSV(file, &coordinates); err != nil {
+		log.Fatal(err)
+	}
+
+	return coordinates
+}
+
+// ReadShapeFile opens an ESRI Shapefile and returns a Layer of Features
+func ReadShapeFile(lblPath string) gdal.Layer {
+	srs := gdal.CreateSpatialReference("")
+	srs.FromEPSG(4326)
+	lblDataSource := gdal.OpenDataSource(lblPath, 1)
+	// lblLayer := lblDataSource.CreateLayer("Labels", srs, gdal.GT_MultiPolygon, []string{})
+	lblLayer := lblDataSource.LayerByIndex(0)
+	return lblLayer
+
+}
+
 // ReprojectImage converts image projection into a new spatial reference
 func ReprojectImage(path string, srs string) {
 
@@ -169,19 +211,22 @@ func ReprojectImage(path string, srs string) {
 	defer out.Close()
 }
 
-// ReadShapeFile opens an ESRI Shapefile and returns a Layer of Features
-func ReadShapeFile(lblPath string) gdal.Layer {
-	srs := gdal.CreateSpatialReference("")
-	srs.FromEPSG(4326)
-	lblDataSource := gdal.OpenDataSource(lblPath, 1)
-	// lblLayer := lblDataSource.CreateLayer("Labels", srs, gdal.GT_MultiPolygon, []string{})
-	lblLayer := lblDataSource.LayerByIndex(0)
-	return lblLayer
-
-}
-
 // RunPipelineBatch executes all tiffany tasks for a list of coordinates
-func RunPipelineBatch() {
+func RunPipelineBatch(csv string, skipFirst bool, coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string) {
+
+	const gsmSubDir string = "png"
+	const geoSubDir string = "tif"
+	const lblSubDir string = "json"
+
+	// Create filenames for output artifacts
+	fnameFormat := fmt.Sprintf("%s_%s_%d_%dx%d", coordinate[0], coordinate[1], zoom, size[0], size[1])
+	pngPath := filepath.Join(path, gsmSubDir, fnameFormat+".png")
+	tifPath := filepath.Join(path, geoSubDir, fnameFormat+".tiff")
+	lblPath := filepath.Join(path, lblSubDir, fnameFormat+".geojson")
+
+	client := GetStaticMapsClient()
+
+	// Read CSV files
 
 }
 

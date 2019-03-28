@@ -66,8 +66,11 @@ longitude.
   tiffany batch coordinates.csv --without-reference
   tiffany batch coordinates.csv --with-labels=/path/to/file.shp
 `,
+
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("batch called")
+		// Get arguments passed
+		csvFile := args[0]
+		RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl)
 	},
 }
 

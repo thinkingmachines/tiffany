@@ -2,6 +2,7 @@ module github.com/thinkingmachines/tiffany
 
 require (
 	github.com/disintegration/imaging v1.6.0
+	github.com/gocarina/gocsv v0.0.0-20190313153828-c075544dca88
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/lukeroth/gdal v0.0.0-20190308162728-12281a1fa6b3

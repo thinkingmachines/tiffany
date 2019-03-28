@@ -1,7 +1,15 @@
 kind: pipeline
 name: build
 
+clone:
+    disable: true
+
 steps:
+    - name: clone
+      image: docker:git
+      commands:
+          - mkdir -p /go/src/github.com/thinkingmachines
+          - git clone https://github.com/thinkingmachines/tiffany.git /go/src/github.com/thinkingmachines/tiffany
     - name: xgo_build
       image: karalabe/xgo-latest
       commands:

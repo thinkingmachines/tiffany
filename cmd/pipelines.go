@@ -20,8 +20,8 @@ import (
 
 // Coordinate defines a lat-long coordinate from a csv file
 type Coordinate struct {
-	latitude  string `csv:"latitude"`
-	longitude string `csv:"longitude"`
+	Latitude  string `csv:"latitude"`
+	Longitude string `csv:"longitude"`
 }
 
 // ClipLabelbyExtent gets the extent of an input raster and clips a shapefile from it
@@ -164,22 +164,22 @@ func GetStaticMapsClient() *maps.Client {
 }
 
 // ReadCSVFile opens a csv file and returns a list of coordinates
-func ReadCSVFile(path string, skipFirst bool) []*coordinate {
-	file, err := os.OpenFile(path)
+func ReadCSVFile(path string, skipFirst bool) []*Coordinate {
+	file, err := os.OpenFile(path, os.O_RDONLY, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	coordinates := []*coordinate{}
+	coordinates := []*Coordinate{}
 	if skipFirst {
-		if err := gocsv.UnmarshalCSVWithoutHeaders(file, &coordinates); err != nil {
+		if err := gocsv.UnmarshalCSVWithoutHeaders(reader, &coordinates); err != nil {
 			log.Fatal(err)
 		}
 
 	}
-	if err := gocsv.UnmarshalCSV(file, &coordinates); err != nil {
+	if err := gocsv.UnmarshalCSV(reader, &coordinates); err != nil {
 		log.Fatal(err)
 	}
 
@@ -211,23 +211,14 @@ func ReprojectImage(path string, srs string) {
 	defer out.Close()
 }
 
-// RunPipelineBatch executes all tiffany tasks for a list of coordinates
-func RunPipelineBatch(csv string, skipFirst bool, coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string) {
-
-	const gsmSubDir string = "png"
-	const geoSubDir string = "tif"
-	const lblSubDir string = "json"
-
-	// Create filenames for output artifacts
-	fnameFormat := fmt.Sprintf("%s_%s_%d_%dx%d", coordinate[0], coordinate[1], zoom, size[0], size[1])
-	pngPath := filepath.Join(path, gsmSubDir, fnameFormat+".png")
-	tifPath := filepath.Join(path, geoSubDir, fnameFormat+".tiff")
-	lblPath := filepath.Join(path, lblSubDir, fnameFormat+".geojson")
-
-	client := GetStaticMapsClient()
-
+// RunBatchPipeline executes all tiffany tasks for a list of coordinates
+func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string) {
 	// Read CSV files
+	coordinates := ReadCSVFile(csvPath, skipFirst)
 
+	for _, coord := range coordinates {
+		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl)
+	}
 }
 
 // RunPipeline executes all tiffany tasks for a single coordinate

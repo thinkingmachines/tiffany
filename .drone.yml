@@ -1,0 +1,13 @@
+kind: pipeline
+name: default
+
+steps:
+    - name: build
+      image: karalabe/xgo-latest
+      commands:
+          - > 
+            xgo
+            --out tiffany-$DRONE_TAG
+            --targets=linux/amd64,linux/386,darwin/*,windows/* 
+            -v
+            .

@@ -24,7 +24,8 @@ var rootCmd = &cobra.Command{
 				      |___/
 
     Render to TIFF any Google Static Maps (GSM) image
-       (c) Thinking Machines Data Science, 2019`,
+       (c) Thinking Machines Data Science, 2019
+		  Version: v1.0.0-alpha`,
 	Example: `
   tiffany 14.54694524 121.0197543253
   tiffany 14.54694524 121.0197543253 --without-reference
@@ -42,6 +43,7 @@ var rootCmd = &cobra.Command{
 		}
 		return nil
 	},
+	Version: "v1.0.0-alpha",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
@@ -66,7 +68,8 @@ longitude.
   tiffany batch coordinates.csv --without-reference
   tiffany batch coordinates.csv --with-labels=/path/to/file.shp
 `,
-	Args: cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
+	Version: "v1.0.0-alpha",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		csvFile := args[0]

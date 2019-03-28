@@ -1,23 +1,17 @@
 kind: pipeline
-name: build
+name: default
 
-clone:
-    disable: true
+workspace:
+    base: /go
+    path: src/github.com/thinkingmachines/tiffany
 
 steps:
-    - name: clone
-      image: docker:git
-      commands:
-          - mkdir -p /go/src/github.com/thinkingmachines
-          - git clone https://github.com/thinkingmachines/tiffany.git /go/src/github.com/thinkingmachines/tiffany
     - name: xgo_build
       image: karalabe/xgo-latest
       commands:
-          - cd /go/src/github.com/thinkingmachines/tiffany
-          - export TAG=$(git describe --tags)
           - > 
             xgo
-            --out tiffany-$TAG
+            --out tiffany-$DRONE_TAG
             --targets=linux/amd64,linux/386,darwin/*,windows/* 
             -v
             github.com/thinkingmachines/tiffany

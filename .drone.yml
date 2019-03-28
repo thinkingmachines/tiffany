@@ -1,0 +1,13 @@
+kind: pipeline
+name: build
+
+steps:
+    - name: xgo_build
+      image: karalabe/xgo-latest
+      commands:
+          - export TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          - > xgo
+            --out tiffany-$TAG
+            --targets=linux/amd64,linux/386,darwin/*,windows/* 
+            -v
+            github.com/thinkingmachines/tiffany

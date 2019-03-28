@@ -217,9 +217,7 @@ func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path
 	coordinates := ReadCSVFile(csvPath, skipFirst)
 
 	for _, coord := range coordinates {
-		go func(coord interface{}) {
-			RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl)
-		}(coord)
+		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl)
 	}
 }
 

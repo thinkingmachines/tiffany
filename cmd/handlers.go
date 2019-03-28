@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"image"
 	"image/png"
 	"log"
 	"math"
@@ -61,8 +60,8 @@ func GetRasterExtent(tifPath string) gdal.Geometry {
 	return extent
 }
 
-// GeoreferenceImage converts a Static Maps image into a geo-referenced TIFF
-func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string, outpath string) {
+// GeoReferenceImage converts a Static Maps image into a geo-referenced TIFF
+func GeoReferenceImage(coordinate []string, size []int, zoom int, inpath string, outpath string) {
 
 	// Define projection constants
 	const projector float64 = 156543.03392
@@ -108,7 +107,12 @@ func GeoreferenceImage(coordinate []string, size []int, zoom int, inpath string,
 
 // GetGSMImage downloads a single static maps image given a client and set of
 // parameters
-func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int) image.Image {
+func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int, outpath string) {
+
+	if _, err := os.Stat(filepath.Dir(outpath)); os.IsNotExist(err) {
+		os.MkdirAll(filepath.Dir(outpath), os.ModePerm)
+	}
+
 	// Prepare request
 	r := &maps.StaticMapRequest{
 		Center:  fmt.Sprintf("%s,%s", coordinate[0], coordinate[1]),
@@ -123,7 +127,14 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int)
 		log.Fatalf("Request error: %s", err)
 	}
 
-	return img
+	f, err := os.Create(fmt.Sprintf("%s", outpath))
+	if err != nil {
+		log.Fatal(err)
+	}
+	imgRGBA := imaging.Clone(img)
+
+	defer f.Close()
+	png.Encode(f, imgRGBA)
 }
 
 // GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
@@ -144,10 +155,10 @@ func GetStaticMapsClient() *maps.Client {
 	return client
 }
 
-// ReprojectImage converts the projection of an image back to 4326
-func ReprojectImage(path string) {
+// ReprojectImage converts image projection into a new spatial reference
+func ReprojectImage(path string, srs string) {
 
-	options := []string{"-t_srs", "epsg:4326"}
+	options := []string{"-t_srs", srs}
 	ds, err := gdal.Open(path, gdal.ReadOnly)
 	if err != nil {
 		log.Fatal(err)
@@ -158,7 +169,7 @@ func ReprojectImage(path string) {
 	defer out.Close()
 }
 
-// ReadShapeFile opens a SHP file and returns a Layer of Features
+// ReadShapeFile opens an ESRI Shapefile and returns a Layer of Features
 func ReadShapeFile(lblPath string) gdal.Layer {
 	srs := gdal.CreateSpatialReference("")
 	srs.FromEPSG(4326)
@@ -169,7 +180,12 @@ func ReadShapeFile(lblPath string) gdal.Layer {
 
 }
 
-// RunPipeline executes the whole download and georeference tasks for a single coordinate
+// RunPipelineBatch executes all tiffany tasks for a list of coordinates
+func RunPipelineBatch() {
+
+}
+
+// RunPipeline executes all tiffany tasks for a single coordinate
 func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string) {
 
 	const gsmSubDir string = "png"
@@ -183,13 +199,12 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	lblPath := filepath.Join(path, lblSubDir, fnameFormat+".geojson")
 
 	client := GetStaticMapsClient()
-	gsmImage := GetGSMImage(client, coordinate, zoom, size)
 	log.Printf("Saving image to %s", pngPath)
-	SaveImagePNG(gsmImage, pngPath)
+	GetGSMImage(client, coordinate, zoom, size, pngPath)
 	if !noRef {
 		log.Printf("Georeferencing image into %s", tifPath)
-		GeoreferenceImage(coordinate, size, zoom, pngPath, tifPath)
-		ReprojectImage(tifPath)
+		GeoReferenceImage(coordinate, size, zoom, pngPath, tifPath)
+		ReprojectImage(tifPath, "epsg:4326")
 	}
 	if len(wtLbl) > 0 {
 		log.Printf("Saving labels to %s", lblPath)
@@ -197,20 +212,4 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 		shpFile := ReadShapeFile(wtLbl)
 		ClipLabelbyExtent(extent, shpFile, lblPath)
 	}
-}
-
-// SaveImagePNG exports an image into a file
-func SaveImagePNG(img image.Image, outpath string) {
-	if _, err := os.Stat(filepath.Dir(outpath)); os.IsNotExist(err) {
-		os.MkdirAll(filepath.Dir(outpath), os.ModePerm)
-	}
-
-	f, err := os.Create(fmt.Sprintf("%s", outpath))
-	if err != nil {
-		log.Fatal(err)
-	}
-	imgRGBA := imaging.Clone(img)
-
-	defer f.Close()
-	png.Encode(f, imgRGBA)
 }

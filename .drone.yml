@@ -1,0 +1,14 @@
+kind: pipeline
+name: default
+
+steps:
+    - name: build
+      image: karalabe/xgo-latest 
+      commands:
+          - ci/install_gdal.sh
+          - > 
+            xgo
+            --out tiffany-$DRONE_TAG
+            --targets=linux/amd64
+            -v
+            .

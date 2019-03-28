@@ -1,12 +1,8 @@
 kind: pipeline
 name: default
 
-workspace:
-    base: /go
-    path: src/github.com/thinkingmachines/tiffany
-
 steps:
-    - name: xgo_build
+    - name: build
       image: karalabe/xgo-latest
       commands:
           - > 
@@ -14,4 +10,4 @@ steps:
             --out tiffany-$DRONE_TAG
             --targets=linux/amd64,linux/386,darwin/*,windows/* 
             -v
-            github.com/thinkingmachines/tiffany
+            .

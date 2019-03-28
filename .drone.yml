@@ -13,6 +13,7 @@ steps:
     - name: xgo_build
       image: karalabe/xgo-latest
       commands:
+          - cd /go/src/github.com/thinkingmachines/tiffany
           - export TAG=$(git describe --tags)
           - > 
             xgo

@@ -2,14 +2,10 @@ kind: pipeline
 name: default
 
 steps:
-    - name: gdal
-      image: continuumio/miniconda
-      commands:
-          - conda install gdal
-          - export PATH="/opt/conda:$PATH"
     - name: build
       image: karalabe/xgo-latest 
       commands:
+          - ci/install_gdal.sh
           - > 
             xgo
             --out tiffany-$DRONE_TAG

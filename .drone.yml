@@ -12,3 +12,14 @@ steps:
             --targets=linux/amd64
             -v
             .
+    - name: publish
+      image: plugins/github-release
+      settings:
+          api_key:
+              from_secret: github_token 
+          title: Release $DRONE_TAG
+          files: tiffany*
+      when:
+          branch: master
+          event: tag
+          

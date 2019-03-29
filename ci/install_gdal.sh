@@ -10,9 +10,9 @@ export CPLUS_INCLUDE_PATH=/usr/include/gdal
 export C_INCLUDE_PATH=/usr/include/gdal
 
 # Add gdal.pc in config
-which gdal-config || exit ${LINENO}
-cd /usr/lib/pkgconfig || exit ${LINENO}
-[ -r gdal.pc ] && exit ${LINENO}
+which gdal-config
+cd /usr/lib/pkgconfig
+[ -r gdal.pc ]
 curl -ks 'https://gist.githubusercontent.com/nicerobot/5160658/raw/gdal.pc.template' \
 | sed -e 's/^/echo /' \
 | bash - \

@@ -15,5 +15,5 @@ export CPLUS_INCLUDE_PATH=/usr/include/gdal
 export C_INCLUDE_PATH=/usr/include/gdal
 
 # Add gdal.pc in config
-curl -ks 'https://gist.githubusercontent.com/nicerobot/5160658/raw/install-gdalpc.sh' | sudo bash -
+curl -ks 'https://gist.githubusercontent.com/nicerobot/5160658/raw/install-gdalpc.sh' | bash -
 cat /usr/lib/pkgconfig/gdal.pc

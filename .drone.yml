@@ -9,7 +9,6 @@ steps:
           - > 
             xgo
             --out tiffany-$DRONE_TAG
-            --targets=linux/amd64 # TODO: darwin/amd64, windows/amd64
+            --targets=linux/amd64
             -v
             .
-          - ls tiffany*

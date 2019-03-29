@@ -1,5 +1,6 @@
 # tiffany 
 
+[![Build Status](https://cloud.drone.io/api/badges/thinkingmachines/tiffany/status.svg)](https://cloud.drone.io/thinkingmachines/tiffany)
 [![GoDoc](https://godoc.org/github.com/thinkingmachines/tiffany?status.svg)](https://godoc.org/github.com/thinkingmachines/tiffany)
 
 A command-line tool for rendering to TIFF any image from Google Static Maps

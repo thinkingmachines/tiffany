@@ -2,6 +2,7 @@
 
 [![Build Status](https://cloud.drone.io/api/badges/thinkingmachines/tiffany/status.svg)](https://cloud.drone.io/thinkingmachines/tiffany)
 [![GoDoc](https://godoc.org/github.com/thinkingmachines/tiffany?status.svg)](https://godoc.org/github.com/thinkingmachines/tiffany)
+[![Go Report Card](https://goreportcard.com/badge/github.com/thinkingmachines/tiffany)](https://goreportcard.com/report/github.com/thinkingmachines/tiffany)
 
 A command-line tool for rendering to TIFF any image from Google Static Maps
 
@@ -12,10 +13,25 @@ segmentation, etc.)
 
 ## Installation
 
+### Getting the binaries
+
+You can obtain the latest binaries from our
+[Releases](https://github.com/thinkingmachines/tiffany/releases) tab. Make sure
+to download the one compatible to your system. As of now, we only compile on
+amd64 architectures:
+
+|         | Linux (amd64)               | Darwin (amd64)               | Windows (amd64)               |
+|---------|-----------------------------|------------------------------|-------------------------------|
+| Latest  | tiffany-latest-linux-amd64  | tiffany-latest-darwin-amd64  | tiffany-latest-windows-amd64  |
+| Nightly | tiffany-nightly-linux-amd64 | tiffany-nightly-darwin-amd64 | tiffany-nightly-windows-amd64 |
+
+
 ### Compiling from source
 
-You need [go1.11](https://golang.org/doc/go1.11) to be able to compile this from
-source. First, clone the repository and enter it:
+Alternatively, you can compile `tiffany` from source. You need
+[go1.11](https://golang.org/doc/go1.11) and
+[GDAL>=2.0.0](https://www.gdal.org/) to create successful builds.  First, clone
+the repository and enter it:
 
 ```s
 $ git clone git@github.com:thinkingmachines/tiffany.git
@@ -35,19 +51,13 @@ Optionally, you can also install `tiffany` inside your system
 $ go install
 ```
 
-### Getting the binaries
-
-Alternatively, you can simply get the latest binaries from our
-[Releases](https://github.com/thinkingmachines/tiffany/releases) tab. Make sure
-to download the one compatible to your system.
-
-
 ## Usage
 
 ### Authentication
 
 Tiffany requires a [Google Static Maps API
-Key](https://developers.google.com/maps/documentation/maps-static/intro#get-a-key). Generate one and store it inside an `.env` file in your project directory:
+Key](https://developers.google.com/maps/documentation/maps-static/intro#get-a-key).
+Generate one and store it inside an `.env` file in your project directory:
 
 ```s
 # .env
@@ -56,12 +66,9 @@ API_KEY="<your API key here>"
 
 ### Getting images
 
-![Demo](assets/tiffany-demo.gif)
-
 To get images, simply call `tiffany`, and pass it your latitude and longitude:
 
 ```s
-# tiffany [LATITUDE] [LONGITUDE]
 $ tiffany 14.546943935986324 121.01974525389744
 ```
 
@@ -82,7 +89,26 @@ Shapefile. This is useful for downstream tasks such as in machine learning:
 $ tiffany 14.546943935986324 121.01974525389744 --with-labels=path/to/gis_osm_buildings_free_1.shp
 ```
 
-You can find more options by running `tiffany --help`
+## Getting multiple images
+
+Rather than invoking a for-loop, it is also possible to get multiple images by
+passing a CSV file containing the latitude and longitude of the
+points-of-interest in the `batch` command. This method is more efficient and
+relatively faster:
+
+```
+# coordinates.csv
+latitude,longitude
+14.546943935986324,121.01974525389744
+14.438494843958949,121.84324983413455
+14.879847197948529,121.81851791571952
+```
+
+And then,
+
+```s
+$ tiffany batch coordinates.csv
+```
 
 ## Contributing
 

@@ -17,7 +17,7 @@ segmentation, etc.)
 - Automatically georeference downloaded GSM images (SRID: `EPSG:4326`)
 - Create training labels for the images by clipping an ESRI Shapefile
 
-| Original image (`--without-reference`) | Georeferenced (default) | With labels (`--with-labels`) |
+| Original image | Georeferenced  | With labels |
 |----------------------------------------|-------------------------|-------------------------------|
 |![orig](assets/no_reference.png) | ![ref](assets/with_reference.png)  | ![lbl](assets/with_labels.png)|
 

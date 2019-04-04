@@ -17,6 +17,10 @@ segmentation, etc.)
 - Automatically georeference downloaded GSM images (SRID: `EPSG:4326`)
 - Create training labels for the images by clipping an ESRI Shapefile
 
+Below are the outputs for an image centered at (14.54694524, 121.0197543253).
+Note that the `--with-labels` flag requires an input ESRI Shapefile preferably
+from OpenStreetMap (OSM).
+
 | Original image | Georeferenced  | With labels |
 |----------------------------------------|-------------------------|-------------------------------|
 |![orig](assets/no_reference.png) | ![ref](assets/with_reference.png)  | ![lbl](assets/with_labels.png)|

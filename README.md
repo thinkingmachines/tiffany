@@ -11,6 +11,13 @@ Google Static Maps (API). You can use this to prepare labeled data for
 downstream tasks such as in computer vision (object detection, semantic
 segmentation, etc.)
 
+## Features
+
+- Download Google Static Maps Images straight from the command-line
+- Automatically georeference downloaded GSM images (SRID: `EPSG:4326`)
+- Create training labels for the images by clipping an ESRI Shapefile
+
+
 ## Installation
 
 ### Getting the binaries

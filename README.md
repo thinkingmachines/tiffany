@@ -19,7 +19,7 @@ segmentation, etc.)
 
 | Original image (`--without-reference`) | Georeferenced (default) | With labels (`--with-labels`) |
 |----------------------------------------|-------------------------|-------------------------------|
-|![orig](assets/no_reference.png) |                         |                               |
+|![orig](assets/no_reference.png) | ![ref](assets/with_reference.png)  | ![lbl](assets/with_labels.png)|
 
 
 ## Installation

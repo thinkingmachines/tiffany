@@ -1,8 +1,8 @@
 # tiffany 
 
-[![Build Status](https://cloud.drone.io/api/badges/thinkingmachines/tiffany/status.svg)](https://cloud.drone.io/thinkingmachines/tiffany)
-[![GoDoc](https://godoc.org/github.com/thinkingmachines/tiffany?status.svg)](https://godoc.org/github.com/thinkingmachines/tiffany)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thinkingmachines/tiffany)](https://goreportcard.com/report/github.com/thinkingmachines/tiffany)
+[![Build Status](https://img.shields.io/badge/dynamic/json.svg?color=brightgreen&label=build&query=status&url=https%3A%2F%2Fcloud.drone.io%2Fapi%2Frepos%2Fthinkingmachines%2Ftiffany%2Fbuilds%2Flatest%3Fref%3Drefs%2Fheads%2Fmaster&style=flat-square)](https://cloud.drone.io/thinkingmachines/tiffany)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/thinkingmachines/tiffany)
+[![Go Report Card](https://goreportcard.com/badge/github.com/thinkingmachines/tiffany?style=flat-square)](https://goreportcard.com/report/github.com/thinkingmachines/tiffany)
 
 A command-line tool for rendering to TIFF any image from Google Static Maps
 

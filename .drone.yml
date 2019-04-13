@@ -12,6 +12,7 @@ steps:
             --targets=linux/amd64
             -v
             .
+          - ls
           - mkdir dist && mv tiffany* dist/
     - name: publish
       image: plugins/github-release

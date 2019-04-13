@@ -96,10 +96,12 @@ func GeoReferenceImage(coordinate []string, size []int, zoom int, inpath string,
 
 	// Read source image and its driver
 	srcDataset, _ := gdal.Open(inpath, gdal.ReadOnly)
+	defer srcDataset.Close()
 	driver, _ := gdal.GetDriverByName("GTiff")
 
 	// Open destination dataset
 	dstDataset := driver.CreateCopy(outpath, srcDataset, 0, nil, nil, nil)
+	defer dstDataset.Close()
 	dstDataset.SetGeoTransform([6]float64{upperLeftX, gsdResolution, 0, upperLeftY, 0, -gsdResolution})
 
 	// Get raster projection
@@ -108,9 +110,6 @@ func GeoReferenceImage(coordinate []string, size []int, zoom int, inpath string,
 	destWKT, _ := srs.ToWKT()
 
 	dstDataset.SetProjection(destWKT)
-
-	defer dstDataset.Close()
-	defer srcDataset.Close()
 }
 
 // GetGSMImage downloads a single static maps image given a client and set of

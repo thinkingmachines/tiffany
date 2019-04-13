@@ -6,9 +6,11 @@ steps:
       image: golang:1.11.9-stretch
       commands:
           - ci/install_gdal.sh
+          - go get github.com/karalabe/xgo
           - go get
           - > 
             xgo
+            --out dist/tiffany-$DRONE_TAG
             --targets=linux/amd64
             .
           - echo $DRONE_BRANCH

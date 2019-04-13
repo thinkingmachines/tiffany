@@ -3,7 +3,7 @@ name: default  # Default build routine, releases to Github if tagged
 
 steps:
     - name: build
-      image: golang:1.11.9-stretch
+      image: dockercore/golang-cross
       commands: 
         - make TAG=$DRONE_TAG build
     - name: publish
@@ -22,7 +22,7 @@ name: release-latest # Latest release to GCS, triggers for tag commits
 
 steps:
     - name: build
-      image: golang:1.11.9-stretch
+      image: dockercore/golang-cross
       commands: 
         - make TAG=latest build
     - name: release
@@ -44,7 +44,7 @@ name: release-nightly # Nightly releases to GCS, triggers only at master
 
 steps:
     - name: build
-      image: golang:1.11.9-stretch
+      image: dockercore/golang-cross
       commands: 
         - make TAG=nightly build
     - name: release

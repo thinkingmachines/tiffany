@@ -8,12 +8,11 @@ steps:
           - ci/install_gdal.sh
           - > 
             xgo
-            --out tiffany-$DRONE_TAG
+            --out dist/tiffany-$DRONE_TAG
             --targets=linux/amd64
             -v
             .
-          - ls
-          - mkdir dist && mv tiffany* dist/
+          - ls dist/
     - name: publish
       image: plugins/github-release
       settings:

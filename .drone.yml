@@ -10,8 +10,9 @@ steps:
             xgo
             -out dist/tiffany-$DRONE_TAG
             --targets=linux/amd64
-            -v
             .
+          - echo $DRONE_BRANCH
+          - echo $DRONE_TAG
           - ls -al
     - name: publish
       image: plugins/github-release

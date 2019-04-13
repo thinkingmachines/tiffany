@@ -40,7 +40,7 @@ trigger:
 
 ---
 kind: pipeline
-name: release-nightly # Nightly release to GCS, triggers only at master
+name: release-nightly # Nightly releases to GCS, triggers only at master
 
 steps:
     - name: build

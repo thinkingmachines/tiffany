@@ -4,7 +4,8 @@ name: default  # Default build routine, releases to Github if tagged
 steps:
     - name: build
       image: golang:1.11.9-stretch
-      commands: make build
+      commands: 
+        - make build
     - name: publish
       image: plugins/github-release
       settings:
@@ -22,7 +23,8 @@ name: release-latest # Latest release to GCS, triggers for tag commits
 steps:
     - name: build
       image: golang:1.11.9-stretch
-      commands: make build
+      commands: 
+        - make build
     - name: release
       image: plugins/gcs
       settings:
@@ -43,7 +45,8 @@ name: release-nightly # Nightly release to GCS, triggers only at master
 steps:
     - name: build
       image: golang:1.11.9-stretch
-      commands: make build
+      commands: 
+        - make build
     - name: release
       image: plugins/gcs
       settings:

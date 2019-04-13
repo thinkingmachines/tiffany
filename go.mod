@@ -5,6 +5,7 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20190313153828-c075544dca88
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/joho/godotenv v1.3.0
+	github.com/karalabe/xgo v0.0.0-20190301120235-2d6d1848fb02 // indirect
 	github.com/lukeroth/gdal v0.0.0-20190308162728-12281a1fa6b3
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3 // indirect

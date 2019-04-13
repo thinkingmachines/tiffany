@@ -44,8 +44,8 @@ amd64 architectures:
 
 |         | Linux (amd64)               | Darwin (amd64)               | Windows (amd64)               |
 |---------|-----------------------------|------------------------------|-------------------------------|
-| Latest  | tiffany-latest-linux-amd64  | tiffany-latest-darwin-amd64  | tiffany-latest-windows-amd64  |
-| Nightly | tiffany-nightly-linux-amd64 | tiffany-nightly-darwin-amd64 | tiffany-nightly-windows-amd64 |
+| Latest  | [tiffany-latest-linux-amd64](https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64)  | tiffany-latest-darwin-amd64  | tiffany-latest-windows-amd64  |
+| Nightly | [tiffany-nightly-linux-amd64](https://storage.googleapis.com/tm-tiffany/releases/tiffany_nightly_linux_amd64) | tiffany-nightly-darwin-amd64 | tiffany-nightly-windows-amd64 |
 
 
 ### Compiling from source

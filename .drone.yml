@@ -6,10 +6,8 @@ steps:
       image: karalabe/xgo-latest 
       commands:
           - ci/install_gdal.sh
-          - go get .
           - > 
             xgo
-            #--out dist/tiffany-$DRONE_TAG
             --targets=linux/amd64
             .
           - echo $DRONE_BRANCH

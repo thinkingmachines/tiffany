@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Install software-properties-common to add repositories
+apt-get update -y && apt install -y software-properties-common
+
+# Install GDAL
+add-apt-repository -y ppa:ubuntugis/ppa && apt-get update
+
 # Install GDAL
 apt-get update && apt-get install -y \
     curl \

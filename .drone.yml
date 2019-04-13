@@ -7,7 +7,7 @@ steps:
       commands:
           - ci/install_gdal.sh
           - go get
-          - OUTPUT = dist/{{.Dir}}\_$DRONE_TAG\_{{.OS}}_{{.Arch}}
+          - OUTPUT=dist/{{.Dir}}\_$DRONE_TAG\_{{.OS}}_{{.Arch}}
           - gox -os="linux" -arch="amd64" -output=$OUTPUT
           - ls -al
           - ls dist/

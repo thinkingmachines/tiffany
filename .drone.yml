@@ -56,6 +56,9 @@ steps:
           acl: allUsers:READER
           token:
               from_secret: gcs_token
+      when:
+          branch:
+              - master
 trigger:
     branch:
     - master

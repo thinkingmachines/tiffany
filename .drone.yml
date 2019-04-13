@@ -8,9 +8,10 @@ steps:
           - ci/install_gdal.sh
           - > 
             xgo
-            -out dist/tiffany-$DRONE_TAG
+            --out dist/tiffany-$DRONE_TAG
+            --branch $DRONE_BRANCH
             --targets=linux/amd64
-            .
+            github.com/thinkingmachines/tiffany
           - echo $DRONE_BRANCH
           - echo $DRONE_TAG
           - ls -al

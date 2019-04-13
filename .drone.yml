@@ -4,14 +4,7 @@ name: default  # Default build routine, releases to Github if tagged
 steps:
     - name: build
       image: golang:1.11.9-stretch
-      commands:
-          - ci/install_gdal.sh
-          - go get github.com/mitchellh/gox
-          - go get
-          - OUTPUT=dist/{{.Dir}}\_$DRONE_TAG\_{{.OS}}_{{.Arch}}
-          - gox -os="linux" -arch="amd64" -output=$OUTPUT
-          - ls -al
-          - ls dist/
+      commands: make build
     - name: publish
       image: plugins/github-release
       settings:
@@ -28,16 +21,8 @@ name: release-latest # Latest release to GCS, triggers for tag commits
 
 steps:
     - name: build
-      image: karalabe/xgo-latest 
-      commands:
-          - ci/install_gdal.sh
-          - > 
-            xgo
-            --out tiffany-latest
-            --targets=linux/amd64
-            -v
-            .
-          - mkdir dist && mv tiffany* dist/
+      image: golang:1.11.9-stretch
+      commands: make build
     - name: release
       image: plugins/gcs
       settings:
@@ -57,16 +42,8 @@ name: release-nightly # Nightly release to GCS, triggers only at master
 
 steps:
     - name: build
-      image: karalabe/xgo-latest 
-      commands:
-          - ci/install_gdal.sh
-          - > 
-            xgo
-            --out tiffany-nightly
-            --targets=linux/amd64
-            -v
-            .
-          - mkdir dist && mv tiffany* dist/
+      image: golang:1.11.9-stretch
+      commands: make build
     - name: release
       image: plugins/gcs
       settings:

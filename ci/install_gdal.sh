@@ -4,7 +4,7 @@
 apt-get update -y && apt install -y software-properties-common
 
 # Install GDAL
-add-apt-repository -y ppa:ubuntugis/ppa && apt-get update
+# add-apt-repository -y ppa:ubuntugis/ppa && apt-get update
 apt-get update && apt-get install -y \
     curl \
     gdal-bin \

@@ -5,7 +5,7 @@ steps:
     - name: build
       image: golang:1.11.9-stretch
       commands: 
-        - make build
+        - make TAG=$DRONE_TAG build
     - name: publish
       image: plugins/github-release
       settings:
@@ -24,7 +24,7 @@ steps:
     - name: build
       image: golang:1.11.9-stretch
       commands: 
-        - make build
+        - make TAG=latest build
     - name: release
       image: plugins/gcs
       settings:
@@ -46,7 +46,7 @@ steps:
     - name: build
       image: golang:1.11.9-stretch
       commands: 
-        - make build
+        - make TAG=nightly build
     - name: release
       image: plugins/gcs
       settings:

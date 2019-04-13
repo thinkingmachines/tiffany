@@ -1,5 +1,5 @@
 kind: pipeline
-name: default
+name: default  # Default build routine, releases to Github if tagged
 
 steps:
     - name: build
@@ -12,13 +12,71 @@ steps:
             --targets=linux/amd64
             -v
             .
+          - mkdir dist && mv tiffany* dist/
     - name: publish
       image: plugins/github-release
       settings:
           api_key:
               from_secret: github_token 
           title: Release $DRONE_TAG
-          files: tiffany*
+          files: dist/*
       when:
           event: tag
-          
+
+---
+kind: pipeline
+name: release-latest # Latest release to GCS, triggers for tag commits
+
+steps:
+    - name: build
+      image: karalabe/xgo-latest 
+      commands:
+          - ci/install_gdal.sh
+          - > 
+            xgo
+            --out tiffany-latest
+            --targets=linux/amd64
+            -v
+            .
+          - mkdir dist && mv tiffany* dist/
+    - name: release
+      image: plugins/gcs
+      settings:
+          source: dist
+          target: tm-tiffany/releases/
+          ignore: tiffany.out
+          acl: allUsers:READER
+          token:
+              from_secret: gcs_token
+trigger:
+    event:
+    - tag
+
+---
+kind: pipeline
+name: release-nightly # Nightly release to GCS, triggers only at master
+
+steps:
+    - name: build
+      image: karalabe/xgo-latest 
+      commands:
+          - ci/install_gdal.sh
+          - > 
+            xgo
+            --out tiffany-nightly
+            --targets=linux/amd64
+            -v
+            .
+          - mkdir dist && mv tiffany* dist/
+    - name: release
+      image: plugins/gcs
+      settings:
+          source: dist
+          target: tm-tiffany/releases/
+          ignore: tiffany.out
+          acl: allUsers:READER
+          token:
+              from_secret: gcs_token
+trigger:
+    branch:
+    - master

@@ -148,6 +148,12 @@ and a [Code of
 Conduct](https://github.com/thinkingmachines/tiffany/blob/master/CODE_OF_CONDUCT.md),
 so please check that one out!
 
+## Acknowledgements
+
+- OSM data [copyright OpenStreetMap contributors](www.openstreetmap.org/copyright) and licensed under [Open Database License](opendatacommons.org/licenses/odbl)
+- Use of Google Static Maps is governed by its [Terms of Use](https://cloud.google.com/maps-platform/terms/) and [Additional Terms of Service](https://maps.google.com/help/terms_maps/). You still need to acquire an API key in order to use this service.
+
 ## License
 
 MIT License (c) 2019,  Thinking Machines Data Science
+

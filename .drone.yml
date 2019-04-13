@@ -3,10 +3,9 @@ name: default  # Default build routine, releases to Github if tagged
 
 steps:
     - name: build
-      image: golang:1.11 
+      image: ubuntu:xenial 
       commands:
           - ci/install_gdal.sh
-          - go get
           - > 
             xgo
             --targets=linux/amd64

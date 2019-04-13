@@ -9,10 +9,9 @@ steps:
           - go get .
           - > 
             xgo
-            --out dist/tiffany-$DRONE_TAG
-            --branch $DRONE_BRANCH
+            #--out dist/tiffany-$DRONE_TAG
             --targets=linux/amd64
-            github.com/thinkingmachines/tiffany
+            .
           - echo $DRONE_BRANCH
           - echo $DRONE_TAG
           - ls -al

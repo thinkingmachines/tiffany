@@ -20,6 +20,5 @@ steps:
           title: Release $DRONE_TAG
           files: tiffany*
       when:
-          branch: master
           event: tag
           

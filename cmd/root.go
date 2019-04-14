@@ -47,7 +47,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
-		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl)
+		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl, force)
 	},
 }
 
@@ -73,7 +73,7 @@ longitude.
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		csvFile := args[0]
-		RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl)
+		RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl, force)
 	},
 }
 
@@ -83,6 +83,7 @@ var path string
 var wtLbl string
 var noRef bool
 var skipFirst bool
+var force bool
 
 func init() {
 	// Add sub-commands
@@ -94,6 +95,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&path, "path", "tiffany.out/", "path to save output artifacts")
 	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's ESRI Shapefile")
 	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
+	rootCmd.PersistentFlags().BoolVar(&force, "force", false, "download satellite image even if it exists")
 
 	// Define flags for `batch` command
 	batchCmd.Flags().BoolVar(&skipFirst, "skip-header-row", false, "skip header row")

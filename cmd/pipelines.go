@@ -211,17 +211,17 @@ func ReprojectImage(path string, srs string) {
 }
 
 // RunBatchPipeline executes all tiffany tasks for a list of coordinates
-func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string) {
+func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) {
 	// Read CSV files
 	coordinates := ReadCSVFile(csvPath, skipFirst)
 
 	for _, coord := range coordinates {
-		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl)
+		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
 	}
 }
 
 // RunPipeline executes all tiffany tasks for a single coordinate
-func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string) {
+func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) {
 
 	const gsmSubDir string = "png"
 	const geoSubDir string = "tif"
@@ -233,9 +233,21 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	tifPath := filepath.Join(path, geoSubDir, fnameFormat+".tiff")
 	lblPath := filepath.Join(path, lblSubDir, fnameFormat+".geojson")
 
-	client := GetStaticMapsClient()
-	log.Printf("Saving image to %s", pngPath)
-	GetGSMImage(client, coordinate, zoom, size, pngPath)
+	// Download Google Static Maps (GSM) Image
+	if force {
+		// Force download an image
+		client := GetStaticMapsClient()
+		log.Printf("Saving image to %s", pngPath)
+		GetGSMImage(client, coordinate, zoom, size, pngPath)
+	} else if _, err := os.Stat(pngPath); err == nil {
+		log.Printf("%s exists, skipping download step", pngPath)
+	} else {
+		client := GetStaticMapsClient()
+		log.Printf("Saving image to %s", pngPath)
+		GetGSMImage(client, coordinate, zoom, size, pngPath)
+
+	}
+
 	if !noRef {
 		log.Printf("Georeferencing image into %s", tifPath)
 		GeoReferenceImage(coordinate, size, zoom, pngPath, tifPath)

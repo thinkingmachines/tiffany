@@ -15,6 +15,7 @@ import (
 	"github.com/gocarina/gocsv"
 	"github.com/joho/godotenv"
 	"github.com/lukeroth/gdal"
+	"github.com/schollz/progressbar/v2"
 	"googlemaps.github.io/maps"
 )
 
@@ -146,7 +147,6 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int,
 
 // GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
 func GetStaticMapsClient() *maps.Client {
-	log.Printf("Loading Google Static Maps Client")
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
@@ -214,6 +214,7 @@ func ReprojectImage(path string, srs string) {
 func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) {
 	// Read CSV files
 	coordinates := ReadCSVFile(csvPath, skipFirst)
+	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
 
 	for _, coord := range coordinates {
 		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
@@ -237,24 +238,20 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	if force {
 		// Force download an image
 		client := GetStaticMapsClient()
-		log.Printf("Saving image to %s", pngPath)
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
 	} else if _, err := os.Stat(pngPath); err == nil {
-		log.Printf("%s exists, skipping download step", pngPath)
+		log.Printf("%s exists, skipping...", pngPath)
 	} else {
 		client := GetStaticMapsClient()
-		log.Printf("Saving image to %s", pngPath)
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
 
 	}
 
 	if !noRef {
-		log.Printf("Georeferencing image into %s", tifPath)
 		GeoReferenceImage(coordinate, size, zoom, pngPath, tifPath)
 		ReprojectImage(tifPath, "epsg:4326")
 	}
 	if len(wtLbl) > 0 {
-		log.Printf("Saving labels to %s", lblPath)
 		extent := GetRasterExtent(tifPath)
 		shpFile := ReadShapeFile(wtLbl)
 		ClipLabelbyExtent(extent, shpFile, lblPath)

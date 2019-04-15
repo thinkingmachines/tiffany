@@ -5,6 +5,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -48,6 +49,7 @@ var rootCmd = &cobra.Command{
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
 		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl, force)
+		log.Printf("Tiffany job for (%s, %s) done!", coordinate[0], coordinate[1])
 	},
 }
 

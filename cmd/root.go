@@ -5,9 +5,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log"
+	"io"
 	"os"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -48,8 +49,13 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
-		RunPipeline(coordinate, zoom, size, path, noRef, wtLbl, force)
-		log.Printf("Tiffany job for (%s, %s) done!", coordinate[0], coordinate[1])
+		initLogger(logPath)
+		skip := RunPipeline(coordinate, zoom, size, path, noRef, wtLbl, force)
+		log.WithFields(log.Fields{
+			"lat":     coordinate[0],
+			"lon":     coordinate[1],
+			"skipped": skip,
+		}).Info("Single job done!")
 	},
 }
 
@@ -75,7 +81,16 @@ longitude.
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get arguments passed
 		csvFile := args[0]
-		RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl, force)
+		initLogger(logPath)
+		log.WithFields(log.Fields{
+			"file": csvFile,
+		}).Info("Batch job successfully started")
+		total, numSkip := RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl, force)
+		fmt.Println("")
+		log.WithFields(log.Fields{
+			"total":   total,
+			"skipped": numSkip,
+		}).Info("Batch job done!")
 	},
 }
 
@@ -86,6 +101,7 @@ var wtLbl string
 var noRef bool
 var skipFirst bool
 var force bool
+var logPath string
 
 func init() {
 	// Add sub-commands
@@ -98,9 +114,20 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&wtLbl, "with-labels", "", "path to the label's ESRI Shapefile")
 	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
 	rootCmd.PersistentFlags().BoolVar(&force, "force", false, "download satellite image even if it exists")
+	rootCmd.PersistentFlags().StringVar(&logPath, "log-path", "tiffany.log", "path to save job logs")
 
 	// Define flags for `batch` command
 	batchCmd.Flags().BoolVar(&skipFirst, "skip-header-row", false, "skip header row")
+}
+
+func initLogger(path string) {
+	logFile, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, 0666)
+	if err == nil {
+		mw := io.MultiWriter(os.Stdout, logFile)
+		log.SetOutput(mw)
+	} else {
+		log.Panic("Missing log file")
+	}
 }
 
 // Execute runs the root command

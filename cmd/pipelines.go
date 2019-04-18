@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"image/png"
-	"log"
 	"math"
 	"os"
 	"path/filepath"
@@ -16,6 +15,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/lukeroth/gdal"
 	"github.com/schollz/progressbar/v2"
+	log "github.com/sirupsen/logrus"
 	"googlemaps.github.io/maps"
 )
 
@@ -132,7 +132,9 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int,
 	// Perform request
 	img, err := client.StaticMap(context.Background(), r)
 	if err != nil {
-		log.Fatalf("Request error: %s", err)
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Fatal("Request error")
 	}
 
 	f, err := os.Create(fmt.Sprintf("%s", outpath))
@@ -149,14 +151,18 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int,
 func GetStaticMapsClient() *maps.Client {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file: %s", err)
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Fatal("Load error")
 	}
 
 	apiKey := os.Getenv("API_KEY")
 
 	client, err := maps.NewClient(maps.WithAPIKey(apiKey))
 	if err != nil {
-		log.Fatalf("Maps Client error: %s", err)
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Fatal("Load error")
 	}
 
 	return client
@@ -211,18 +217,23 @@ func ReprojectImage(path string, srs string) {
 }
 
 // RunBatchPipeline executes all tiffany tasks for a list of coordinates
-func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) {
+func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) (int, int) {
 	// Read CSV files
 	coordinates := ReadCSVFile(csvPath, skipFirst)
+	var numSkip int
 	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
-
 	for _, coord := range coordinates {
-		RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+		skipped := RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+		if skipped {
+			numSkip++
+		}
+		bar.Add(1)
 	}
+	return len(coordinates), numSkip
 }
 
 // RunPipeline executes all tiffany tasks for a single coordinate
-func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) {
+func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) bool {
 
 	const gsmSubDir string = "png"
 	const geoSubDir string = "tif"
@@ -235,12 +246,16 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	lblPath := filepath.Join(path, lblSubDir, fnameFormat+".geojson")
 
 	// Download Google Static Maps (GSM) Image
+	var skipped = false
 	if force {
 		// Force download an image
 		client := GetStaticMapsClient()
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
 	} else if _, err := os.Stat(pngPath); err == nil {
-		log.Printf("%s exists, skipping...", pngPath)
+		skipped = true
+		log.WithFields(log.Fields{
+			"skipped": pngPath,
+		}).Debug("File exists, skipping. Use --force to override")
 	} else {
 		client := GetStaticMapsClient()
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
@@ -256,4 +271,6 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 		shpFile := ReadShapeFile(wtLbl)
 		ClipLabelbyExtent(extent, shpFile, lblPath)
 	}
+
+	return skipped
 }

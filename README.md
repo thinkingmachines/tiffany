@@ -1,11 +1,14 @@
-![logo](assets/tiffany-logo.png)
----
+<p align="center">
+    <img src="assets/tiffany-logo.png">
+</p>
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/thinkingmachines/tiffany.svg?color=%2300ADD8&label=latest&style=flat-square)](https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64)
-[![Build Status](https://img.shields.io/badge/dynamic/json.svg?color=brightgreen&label=build&query=status&url=https%3A%2F%2Fcloud.drone.io%2Fapi%2Frepos%2Fthinkingmachines%2Ftiffany%2Fbuilds%2Flatest%3Fref%3Drefs%2Fheads%2Fmaster&style=flat-square)](https://cloud.drone.io/thinkingmachines/tiffany)
-[![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/thinkingmachines/tiffany)
-[![Go Report Card](https://goreportcard.com/badge/github.com/thinkingmachines/tiffany?style=flat-square)](https://goreportcard.com/report/github.com/thinkingmachines/tiffany)
-![GitHub](https://img.shields.io/github/license/thinkingmachines/tiffany.svg?color=blue&style=flat-square)
+<p align="center">
+    <a href="https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64"><img src="https://img.shields.io/github/tag/thinkingmachines/tiffany.svg?color=%2300ADD8&label=latest&style=flat-square"></img></a>
+    <a href="https://cloud.drone.io/thinkingmachines/tiffany"><img src="https://img.shields.io/badge/dynamic/json.svg?color=brightgreen&label=build&query=status&url=https%3A%2F%2Fcloud.drone.io%2Fapi%2Frepos%2Fthinkingmachines%2Ftiffany%2Fbuilds%2Flatest%3Fref%3Drefs%2Fheads%2Fmaster&style=flat-square"></img></a>
+    <a href="https://godoc.org/github.com/thinkingmachines/tiffany"><img src="https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square"></img></a>
+    <a href="https://goreportcard.com/report/github.com/thinkingmachines/tiffany"><img src="https://goreportcard.com/badge/github.com/thinkingmachines/tiffany?style=flat-square"></img></a>
+    <a href="https://github.com/thinkingmachines/tiffany/blob/master/LICENSE"><img src="https://img.shields.io/github/license/thinkingmachines/tiffany.svg?color=blue&style=flat-square)"></img></a>
+</p>
 
 A command-line tool for rendering to **TIFF any** image from Google Static Maps
 

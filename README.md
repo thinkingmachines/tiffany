@@ -100,6 +100,10 @@ To get images, simply call `tiffany`, and pass it your latitude and longitude:
 $ tiffany 14.546943935986324 121.01974525389744
 ```
 
+<p align="center">
+    <img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_single_demo_no_window.svg"
+</p>
+
 This will generate a directory, `tiffany.out` where a `*.png` and its
 corresponding `*.tiff` file is located.
 
@@ -137,6 +141,10 @@ And then,
 ```s
 $ tiffany batch coordinates.csv
 ```
+
+<p align="center">
+    <img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_batch_demo_no_window.svg"
+</p>
 
 ## Contributing
 

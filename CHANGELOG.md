@@ -1,12 +1,35 @@
 <a name="unreleased"></a>
 ## [Unreleased]
 
+
+<a name="v1.0.0-alpha.2"></a>
+## [v1.0.0-alpha.2] - 2019-04-18
 ### Add
-- Add CHANGELOG.md
+- Add verbose flag
+- Add progressbar to dependencies
+- Add latest and license badges
+- Add duplicate image validation ([#20](https://github.com/thinkingmachines/tiffany/issues/20))
+
+### Bump
+- Bump version: 1.0.0-alpha.1 → 1.0.0-alpha.2
+
+### Update
+- Update latest badge to download tiffany
+
+### Use
+- Use logrus for logging
+
+
+<a name="v1.0.0-alpha.1"></a>
+## [v1.0.0-alpha.1] - 2019-04-13
+### Add
 - Add Changelog configuration
 - Add release pipelines for latest and nightly ([#27](https://github.com/thinkingmachines/tiffany/issues/27))
 - Add Acknowledgements section
 - Add sample images in README ([#23](https://github.com/thinkingmachines/tiffany/issues/23))
+
+### Bump
+- Bump version: 1.0.0-alpha.0 → 1.0.0-alpha.1
 
 ### Execute
 - Execute publish step on any branch
@@ -15,6 +38,8 @@
 - Fix 'too many open files' error ([#25](https://github.com/thinkingmachines/tiffany/issues/25))
 
 ### Update
+- Update versioning scheme
+- Update README.md
 - Update README.md
 - Update README.md
 
@@ -67,4 +92,6 @@
 - Update README
 
 
-[Unreleased]: https://github.com/thinkingmachines/tiffany/compare/v1.0.0-alpha...HEAD
+[Unreleased]: https://github.com/thinkingmachines/tiffany/compare/v1.0.0-alpha.2...HEAD
+[v1.0.0-alpha.2]: https://github.com/thinkingmachines/tiffany/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
+[v1.0.0-alpha.1]: https://github.com/thinkingmachines/tiffany/compare/v1.0.0-alpha...v1.0.0-alpha.1

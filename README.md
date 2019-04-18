@@ -1,4 +1,5 @@
-# tiffany 
+![logo](assets/tiffany-logo.png)
+---
 
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/thinkingmachines/tiffany.svg?color=%2300ADD8&label=latest&style=flat-square)](https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64)
 [![Build Status](https://img.shields.io/badge/dynamic/json.svg?color=brightgreen&label=build&query=status&url=https%3A%2F%2Fcloud.drone.io%2Fapi%2Frepos%2Fthinkingmachines%2Ftiffany%2Fbuilds%2Flatest%3Fref%3Drefs%2Fheads%2Fmaster&style=flat-square)](https://cloud.drone.io/thinkingmachines/tiffany)
@@ -154,6 +155,7 @@ so please check that one out!
 
 - OSM data [copyright OpenStreetMap contributors](www.openstreetmap.org/copyright) and licensed under [Open Database License](opendatacommons.org/licenses/odbl)
 - Use of Google Static Maps is governed by its [Terms of Use](https://cloud.google.com/maps-platform/terms/) and [Additional Terms of Service](https://maps.google.com/help/terms_maps/). You still need to acquire an API key in order to use this service.
+- The tiffany logo was inspired by the Twitch logo, and was based from the font type created by [MaxiGamer](https://deltafonts.com/deviantart-font/). The color is based from Gopher Blue (`#00ADD8`) based from the [Golang Brand book](https://storage.googleapis.com/golang-assets/Go-brand-book-v1.9.5.pdf)
 
 ## License
 

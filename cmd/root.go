@@ -126,9 +126,11 @@ func Execute() {
 }
 
 func initLogger(verbosity int) {
-	if verbosity > 1 {
+	if verbosity == 1 {
 		log.SetLevel(log.DebugLevel)
-	} else if verbosity > 2 {
+	} else if verbosity > 1 {
 		log.SetLevel(log.TraceLevel)
+	} else {
+		log.SetLevel(log.InfoLevel)
 	}
 }

@@ -47,7 +47,8 @@ var rootCmd = &cobra.Command{
 		// Get arguments passed
 		coordinate := []string{args[0], args[1]}
 		initLogger(verbosity)
-		skip := RunPipeline(coordinate, zoom, size, path, noRef, wtLbl, force)
+		client := GetStaticMapsClient(env)
+		skip := RunPipeline(client, coordinate, zoom, size, path, noRef, wtLbl, force)
 		log.WithFields(log.Fields{
 			"lat":     coordinate[0],
 			"lon":     coordinate[1],
@@ -82,7 +83,8 @@ longitude.
 			"file": csvFile,
 		}).Info("Batch job successfully started")
 		initLogger(verbosity)
-		total, numSkip := RunBatchPipeline(csvFile, skipFirst, zoom, size, path, noRef, wtLbl, force)
+		client := GetStaticMapsClient(env)
+		total, numSkip := RunBatchPipeline(client, csvFile, skipFirst, zoom, size, path, noRef, wtLbl, force)
 		fmt.Println("")
 		log.WithFields(log.Fields{
 			"total":   total,
@@ -99,6 +101,7 @@ var noRef bool
 var skipFirst bool
 var force bool
 var verbosity int
+var env string
 
 func init() {
 	// Add sub-commands
@@ -112,6 +115,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&noRef, "without-reference", false, "do not georeference")
 	rootCmd.PersistentFlags().BoolVar(&force, "force", false, "download satellite image even if it exists")
 	rootCmd.PersistentFlags().CountVarP(&verbosity, "verbosity", "v", "set verbosity")
+	rootCmd.PersistentFlags().StringVarP(&env, "env", "e", ".tiffany.env", "path to .tiffany.env file")
 
 	// Define flags for `batch` command
 	batchCmd.Flags().BoolVar(&skipFirst, "skip-header-row", false, "skip header row")

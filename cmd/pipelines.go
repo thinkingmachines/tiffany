@@ -148,8 +148,8 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int,
 }
 
 // GetStaticMapsClient returns a Client for constructing a StaticMapRequest.
-func GetStaticMapsClient() *maps.Client {
-	err := godotenv.Load()
+func GetStaticMapsClient(path string) *maps.Client {
+	err := godotenv.Load(path)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
@@ -217,13 +217,13 @@ func ReprojectImage(path string, srs string) {
 }
 
 // RunBatchPipeline executes all tiffany tasks for a list of coordinates
-func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) (int, int) {
+func RunBatchPipeline(client *maps.Client, csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) (int, int) {
 	// Read CSV files
 	coordinates := ReadCSVFile(csvPath, skipFirst)
 	var numSkip int
 	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
 	for _, coord := range coordinates {
-		skipped := RunPipeline([]string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+		skipped := RunPipeline(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
 		if skipped {
 			numSkip++
 		}
@@ -233,7 +233,7 @@ func RunBatchPipeline(csvPath string, skipFirst bool, zoom int, size []int, path
 }
 
 // RunPipeline executes all tiffany tasks for a single coordinate
-func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) bool {
+func RunPipeline(client *maps.Client, coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) bool {
 
 	const gsmSubDir string = "png"
 	const geoSubDir string = "tif"
@@ -249,7 +249,6 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 	var skipped = false
 	if force {
 		// Force download an image
-		client := GetStaticMapsClient()
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
 	} else if _, err := os.Stat(pngPath); err == nil {
 		skipped = true
@@ -257,7 +256,6 @@ func RunPipeline(coordinate []string, zoom int, size []int, path string, noRef b
 			"skipped": pngPath,
 		}).Debug("File exists, skipping. Use --force to override")
 	} else {
-		client := GetStaticMapsClient()
 		GetGSMImage(client, coordinate, zoom, size, pngPath)
 
 	}

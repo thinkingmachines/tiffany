@@ -9,13 +9,13 @@
 *.test
 
 # Secrets
-.env
+.tiffany.env
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
 # Output executable
-tiffany
+tiffany*
 
 # Testing
 testing/

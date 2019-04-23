@@ -85,7 +85,7 @@ $ go install
 
 Tiffany requires a [Google Static Maps API
 Key](https://developers.google.com/maps/documentation/maps-static/intro#get-a-key).
-Generate one and store it inside an `.env` file in your project directory:
+Generate one and store it inside an `.tiffany.env` file in your project directory:
 
 ```s
 # .env
@@ -100,12 +100,19 @@ To get images, simply call `tiffany`, and pass it your latitude and longitude:
 $ tiffany 14.546943935986324 121.01974525389744
 ```
 
+You can supply the `.tiffany.env` file by passing the filepath to the `--env` parameter. By
+default, it's searched from your project root:
+
+```s
+$ tiffany 14.546943935986324 121.01974525389744 --env=path/to/.tiffany.env
+```
+
 <p align="center">
-    <img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_single_demo_no_window.svg"
+<img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_single_demo_no_window.svg"
 </p>
 
-This will generate a directory, `tiffany.out` where a `*.png` and its
-corresponding `*.tiff` file is located.
+The command above will generate a directory, `tiffany.out` where a `*.png` and
+its corresponding `*.tiff` file is located.
 
 In case you don't want georeferenced images and prefer plain-old PNG images,
 then simply pass the `--without-reference` flag:
@@ -120,6 +127,7 @@ Shapefile. This is useful for downstream tasks such as in machine learning:
 ```s
 $ tiffany 14.546943935986324 121.01974525389744 --with-labels=path/to/gis_osm_buildings_free_1.shp
 ```
+
 
 ## Getting multiple images
 
@@ -143,7 +151,7 @@ $ tiffany batch coordinates.csv
 ```
 
 <p align="center">
-    <img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_batch_demo_no_window.svg"
+<img src="https://storage.googleapis.com/tm-tiffany/assets/tiffany_batch_demo_no_window.svg"
 </p>
 
 ## Contributing

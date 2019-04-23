@@ -228,7 +228,7 @@ func RunBatchPipeline(client *maps.Client, csvPath string, skipFirst bool, zoom 
 	wg.Add(len(coordinates))
 
 	for _, coord := range coordinates {
-		go func(coord Coordinate) {
+		go func(coord *Coordinate) {
 			defer wg.Done()
 			skipped := RunPipeline(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
 			if skipped {

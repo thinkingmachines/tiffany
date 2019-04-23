@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"sync"
 
 	"github.com/disintegration/imaging"
 	"github.com/gocarina/gocsv"
@@ -222,13 +223,21 @@ func RunBatchPipeline(client *maps.Client, csvPath string, skipFirst bool, zoom 
 	coordinates := ReadCSVFile(csvPath, skipFirst)
 	var numSkip int
 	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
+	// Initialize goroutine variables
+	var wg sync.WaitGroup
+	wg.Add(len(coordinates))
+
 	for _, coord := range coordinates {
-		skipped := RunPipeline(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
-		if skipped {
-			numSkip++
-		}
-		bar.Add(1)
+		go func(coord *Coordinate) {
+			defer wg.Done()
+			skipped := RunPipeline(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+			if skipped {
+				numSkip++
+			}
+			bar.Add(1)
+		}(coord)
 	}
+	wg.Wait()
 	return len(coordinates), numSkip
 }
 

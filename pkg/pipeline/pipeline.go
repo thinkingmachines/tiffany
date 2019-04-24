@@ -1,4 +1,9 @@
-package cmd
+// Copyright 2019 Thinking Machines Data Science. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root
+// for license information.
+
+// Package pipeline manages all geospatial transforms in tiffany.
+package pipeline
 
 import (
 	"context"
@@ -20,10 +25,17 @@ import (
 	"googlemaps.github.io/maps"
 )
 
-// Coordinate defines a lat-long coordinate from a csv file
-type Coordinate struct {
+// coordinate defines a lat-long coordinate from a csv file
+type coordinate struct {
 	Latitude  string `csv:"latitude"`
 	Longitude string `csv:"longitude"`
+}
+
+// checkError is a convenience function to fatally log an exit if the supplied error is non-nil
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // ClipLabelbyExtent gets the extent of an input raster and clips a shapefile from it
@@ -45,9 +57,7 @@ func ClipLabelbyExtent(extent gdal.Geometry, shpFile gdal.Layer, outpath string)
 // GetRasterExtent computes for the extent of a TIFF image and returns a Geometry
 func GetRasterExtent(tifPath string) gdal.Geometry {
 	src, err := gdal.Open(tifPath, gdal.ReadOnly)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 
 	// affine (transformation) is organized as
 	// (ulx, xres, xskew, uly, yskew, yres)
@@ -139,9 +149,7 @@ func GetGSMImage(client *maps.Client, coordinate []string, zoom int, size []int,
 	}
 
 	f, err := os.Create(fmt.Sprintf("%s", outpath))
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 	imgRGBA := imaging.Clone(img)
 
 	defer f.Close()
@@ -169,16 +177,14 @@ func GetStaticMapsClient(path string) *maps.Client {
 	return client
 }
 
-// ReadCSVFile opens a csv file and returns a list of coordinates
-func ReadCSVFile(path string, skipFirst bool) []*Coordinate {
+// readCSVFile opens a csv file and returns a list of coordinates
+func readCSVFile(path string, skipFirst bool) []*coordinate {
 	file, err := os.OpenFile(path, os.O_RDONLY, os.ModePerm)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	coordinates := []*Coordinate{}
+	coordinates := []*coordinate{}
 	if skipFirst {
 		if err := gocsv.UnmarshalCSVWithoutHeaders(reader, &coordinates); err != nil {
 			log.Fatal(err)
@@ -208,41 +214,15 @@ func ReprojectImage(path string, srs string) {
 
 	options := []string{"-t_srs", srs}
 	ds, err := gdal.Open(path, gdal.ReadOnly)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 	defer ds.Close()
 
 	out := gdal.GDALWarp(path, gdal.Dataset{}, []gdal.Dataset{ds}, options)
 	defer out.Close()
 }
 
-// RunBatchPipeline executes all tiffany tasks for a list of coordinates
-func RunBatchPipeline(client *maps.Client, csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) (int, int) {
-	// Read CSV files
-	coordinates := ReadCSVFile(csvPath, skipFirst)
-	var numSkip int
-	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
-	// Initialize goroutine variables
-	var wg sync.WaitGroup
-	wg.Add(len(coordinates))
-
-	for _, coord := range coordinates {
-		go func(coord *Coordinate) {
-			defer wg.Done()
-			skipped := RunPipeline(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
-			if skipped {
-				numSkip++
-			}
-			bar.Add(1)
-		}(coord)
-	}
-	wg.Wait()
-	return len(coordinates), numSkip
-}
-
-// RunPipeline executes all tiffany tasks for a single coordinate
-func RunPipeline(client *maps.Client, coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) bool {
+// Run executes all tiffany tasks for a single coordinate
+func Run(client *maps.Client, coordinate []string, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) bool {
 
 	const gsmSubDir string = "png"
 	const geoSubDir string = "tif"
@@ -280,4 +260,28 @@ func RunPipeline(client *maps.Client, coordinate []string, zoom int, size []int,
 	}
 
 	return skipped
+}
+
+// RunBatch executes all tiffany tasks for a list of coordinates
+func RunBatch(client *maps.Client, csvPath string, skipFirst bool, zoom int, size []int, path string, noRef bool, wtLbl string, force bool) (int, int) {
+	// Read CSV files
+	coordinates := readCSVFile(csvPath, skipFirst)
+	var numSkip int
+	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
+	// Initialize goroutine variables
+	var wg sync.WaitGroup
+	wg.Add(len(coordinates))
+
+	for _, coord := range coordinates {
+		go func(coord *coordinate) {
+			defer wg.Done()
+			skipped := Run(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+			if skipped {
+				numSkip++
+			}
+			bar.Add(1)
+		}(coord)
+	}
+	wg.Wait()
+	return len(coordinates), numSkip
 }

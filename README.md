@@ -33,11 +33,10 @@ you can generate the following outputs for an image centered at `(14.54694524, 1
 Note that the `--with-labels` flag requires an input ESRI Shapefile preferably
 from OpenStreetMap (OSM).
 
-| Original image | Georeferenced  | With labels |
-|----------------------------------------|-------------------------|-------------------------------|
-|![orig](assets/no_reference.png) | ![ref](assets/with_reference.png)  | ![lbl](assets/with_labels.png)|
-| `--without-reference` | default | `--with-labels` | 
-
+| Original image                   | Georeferenced                     | With labels                    |
+| -------------------------------- | --------------------------------- | ------------------------------ |
+| ![orig](assets/no_reference.png) | ![ref](assets/with_reference.png) | ![lbl](assets/with_labels.png) |
+| `--without-reference`            | default                           | `--with-labels`                |
 
 ## Installation
 
@@ -48,17 +47,16 @@ You can obtain the latest binaries from our
 to download the one compatible to your system. As of now, we only compile on
 amd64 architectures:
 
-|         | Linux (amd64)               | Darwin (amd64)               | Windows (amd64)               |
-|---------|-----------------------------|------------------------------|-------------------------------|
-| Latest  | [tiffany-latest-linux-amd64](https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64)  | tiffany-latest-darwin-amd64  | tiffany-latest-windows-amd64  |
+|         | Linux (amd64)                                                                                                 | Darwin (amd64)               | Windows (amd64)               |
+| ------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------------- |
+| Latest  | [tiffany-latest-linux-amd64](https://storage.googleapis.com/tm-tiffany/releases/tiffany_latest_linux_amd64)   | tiffany-latest-darwin-amd64  | tiffany-latest-windows-amd64  |
 | Nightly | [tiffany-nightly-linux-amd64](https://storage.googleapis.com/tm-tiffany/releases/tiffany_nightly_linux_amd64) | tiffany-nightly-darwin-amd64 | tiffany-nightly-windows-amd64 |
-
 
 ### Compiling from source
 
 Alternatively, you can compile `tiffany` from source. You need
 [go1.11](https://golang.org/doc/go1.11) and
-[GDAL>=2.0.0](https://www.gdal.org/) to create successful builds.  First, clone
+[GDAL>=2.0.0](https://www.gdal.org/) to create successful builds. First, clone
 the repository and enter it:
 
 ```s
@@ -84,12 +82,13 @@ $ go install
 ### Authentication
 
 Tiffany requires a [Google Static Maps API
-Key](https://developers.google.com/maps/documentation/maps-static/intro#get-a-key).
-Generate one and store it inside an `.tiffany.env` file in your project directory:
+Key](https://developers.google.com/maps/documentation/maps-static/get-api-key#get-key). For large amounts of requests, Tiffany also requires a [Secret Key](https://developers.google.com/maps/documentation/maps-static/get-api-key#gen-sig) to sign the url.
+Generate store them inside an `.tiffany.env` file in your project directory:
 
 ```s
-# .env
+# .tiffany.env
 API_KEY="<your API key here>"
+SECRET_KEY="<your Secret key here"
 ```
 
 ### Getting images
@@ -128,7 +127,6 @@ Shapefile. This is useful for downstream tasks such as in machine learning:
 $ tiffany 14.546943935986324 121.01974525389744 --with-labels=path/to/gis_osm_buildings_free_1.shp
 ```
 
-
 ## Getting multiple images
 
 Rather than invoking a for-loop, it is also possible to get multiple images by
@@ -157,10 +155,10 @@ $ tiffany batch coordinates.csv
 ## Contributing
 
 Simply fork this repository and [make a Pull
-Request](https://help.github.com/en/articles/creating-a-pull-request)! We're 
+Request](https://help.github.com/en/articles/creating-a-pull-request)! We're
 open to any kind of contribution, but we'd definitely appreciate:
 
-- Implementation of new features 
+- Implementation of new features
 - Writing documentation
 - Testing
 
@@ -178,5 +176,4 @@ so please check that one out!
 
 ## License
 
-MIT License (c) 2019,  Thinking Machines Data Science
-
+MIT License (c) 2019, Thinking Machines Data Science

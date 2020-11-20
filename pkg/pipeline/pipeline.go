@@ -166,8 +166,13 @@ func GetStaticMapsClient(path string) *maps.Client {
 	}
 
 	apiKey := os.Getenv("API_KEY")
-
-	client, err := maps.NewClient(maps.WithAPIKey(apiKey))
+	secret := os.Getenv("SECRET_KEY") // Convert to secret to signature
+	var client *maps.Client
+	if secret != "" {
+		client, err = maps.NewClient(maps.WithAPIKeyAndSignature(apiKey, secret))
+	} else {
+		client, err = maps.NewClient(maps.WithAPIKey(apiKey))
+	}
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,

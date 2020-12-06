@@ -1,6 +1,10 @@
 build: gdal
-	go get github.com/mitchellh/gox
-	gox -os="linux" -arch="amd64" -output="dist/{{.Dir}}_$(TAG)_{{.OS}}_{{.Arch}}"
+	go get -v github.com/mitchellh/gox
+	export PATH=${PATH}:${GOPATH}/bin
+	${GOPATH}/bin/gox -os="linux darwin windows" 		\
+	    -arch="amd64" 					\
+	    -output="dist/{{.Dir}}_$(TAG)_{{.OS}}_{{.Arch}}"    \
+	    -cgo
 	ls dist/
 
 gdal:

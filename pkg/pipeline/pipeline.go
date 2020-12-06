@@ -14,7 +14,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"sync"
 
 	"github.com/disintegration/imaging"
 	"github.com/gocarina/gocsv"
@@ -208,7 +207,6 @@ func ReadShapeFile(lblPath string) gdal.Layer {
 	srs := gdal.CreateSpatialReference("")
 	srs.FromEPSG(4326)
 	lblDataSource := gdal.OpenDataSource(lblPath, 1)
-	// lblLayer := lblDataSource.CreateLayer("Labels", srs, gdal.GT_MultiPolygon, []string{})
 	lblLayer := lblDataSource.LayerByIndex(0)
 	return lblLayer
 
@@ -273,20 +271,12 @@ func RunBatch(client *maps.Client, csvPath string, skipFirst bool, zoom int, siz
 	coordinates := readCSVFile(csvPath, skipFirst)
 	var numSkip int
 	bar := progressbar.NewOptions(len(coordinates), progressbar.OptionSetRenderBlankState(true))
-	// Initialize goroutine variables
-	var wg sync.WaitGroup
-	wg.Add(len(coordinates))
-
 	for _, coord := range coordinates {
-		go func(coord *coordinate) {
-			defer wg.Done()
-			skipped := Run(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
-			if skipped {
-				numSkip++
-			}
-			bar.Add(1)
-		}(coord)
+		skipped := Run(client, []string{coord.Latitude, coord.Longitude}, zoom, size, path, noRef, wtLbl, force)
+		if skipped {
+			numSkip++
+		}
+		bar.Add(1)
 	}
-	wg.Wait()
 	return len(coordinates), numSkip
 }
